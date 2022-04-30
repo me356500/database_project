@@ -44,7 +44,13 @@
             <?php
               $conn= require_once "config.php";
               $id = $_GET['id'];
-              $data=mysqli_query($conn,"select name from user where account = '$id'");
+              $sql = "select name from user where account = ?";
+              $stmt = mysqli_stmt_init($link); 
+              mysqli_stmt_prepare($stmt, $sql); 
+              mysqli_stmt_bind_param($stmt, 's', $id); 
+              mysqli_stmt_execute($stmt); 
+              $data =$stmt->get_result();
+              
             ?>
             Accouont: 
             <?php
@@ -53,20 +59,36 @@
             ?>
             , Identity:
             <?php
-             $data=mysqli_query($conn,"select identity from user where account = '$id'");
+             $sql = "select identity from user where account = ?";
+             $stmt = mysqli_stmt_init($link); 
+             mysqli_stmt_prepare($stmt, $sql); 
+             mysqli_stmt_bind_param($stmt, 's', $id); 
+             mysqli_stmt_execute($stmt); 
+             $data =$stmt->get_result();
+            
              $rs=mysqli_fetch_row($data);
              echo $rs[0];
             ?> 
             , PhoneNumber:
             <?php
-             $data=mysqli_query($conn,"select phonenumber from user where account = '$id'");
+             $sql = "select phonenumber from user where account = ?";
+             $stmt = mysqli_stmt_init($link); 
+             mysqli_stmt_prepare($stmt, $sql); 
+             mysqli_stmt_bind_param($stmt, 's', $id); 
+             mysqli_stmt_execute($stmt); 
+             $data =$stmt->get_result();
              $rs=mysqli_fetch_row($data);
              echo "0";
              echo $rs[0];
             ?>
             , walletbalance:
             <?php
-             $data=mysqli_query($conn,"select balance from user where account = '$id'");
+             $sql = "select balance from user where account = ?";
+             $stmt = mysqli_stmt_init($link); 
+             mysqli_stmt_prepare($stmt, $sql); 
+             mysqli_stmt_bind_param($stmt, 's', $id); 
+             mysqli_stmt_execute($stmt); 
+             $data =$stmt->get_result();
              $rs=mysqli_fetch_row($data);
              echo $rs[0];
             ?> 
