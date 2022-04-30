@@ -34,13 +34,43 @@
 
 
     </ul>
-
+    
     <div class="tab-content">
       <div id="home" class="tab-pane fade in active">
         <h3>Profile</h3>
         <div class="row">
           <div class="col-xs-10">
-            Accouont: sherry, user, PhoneNumber: 0912345678, walletbalance: 100
+
+            <?php
+              $conn= require_once "config.php";
+              $id = $_GET['id'];
+              $data=mysqli_query($conn,"select name from user where account = '$id'");
+            ?>
+            Accouont: 
+            <?php
+             $rs=mysqli_fetch_row($data);
+             echo $rs[0];
+            ?>
+            , Identity:
+            <?php
+             $data=mysqli_query($conn,"select identity from user where account = '$id'");
+             $rs=mysqli_fetch_row($data);
+             echo $rs[0];
+            ?> 
+            , PhoneNumber:
+            <?php
+             $data=mysqli_query($conn,"select phonenumber from user where account = '$id'");
+             $rs=mysqli_fetch_row($data);
+             echo "0";
+             echo $rs[0];
+            ?>
+            , walletbalance:
+            <?php
+             $data=mysqli_query($conn,"select balance from user where account = '$id'");
+             $rs=mysqli_fetch_row($data);
+             echo $rs[0];
+            ?> 
+            
             <!-- Modal -->
             <button type="button " style="margin-left: 5px;" class=" btn btn-info " data-toggle="modal"
               data-target="#myModal">Add value</button>

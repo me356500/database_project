@@ -10,8 +10,9 @@ mysqli_stmt_prepare($stmt, $sql);
 mysqli_stmt_bind_param($stmt, 'ss', $name, $password); 
 mysqli_stmt_execute($stmt); 
 $result = $stmt->get_result();
+
 if(mysqli_num_rows($result)){
-    header("refresh:0;url=nav.html");
+    header('Location:nav.php?id='.$name);
     exit;
 }
 else {

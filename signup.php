@@ -22,7 +22,14 @@ if(($name && $password && $phonenumber && $account && $repassword && $latitude &
     exit;
 }
 //check account repeated
-$racc = mysqli_query($link, "select * from user where account = '$name'");
+$sql = "select * from user where account = ?";
+$stmt = mysqli_stmt_init($link); 
+mysqli_stmt_prepare($stmt, $sql); 
+mysqli_stmt_bind_param($stmt, 's', $account); 
+mysqli_stmt_execute($stmt); 
+$racc =$stmt->get_result();
+
+
 if(mysqli_num_rows($racc)) {
     echo "
     <script> 
@@ -42,8 +49,18 @@ if($repassword != $password) {
     ";
     exit;
 }
+if(!preg_match('/^[a-zA-Z\s]+$/', $account)){
+
+    echo "
+    <script> 
+        alert('account 只能是大小寫英文 !!');
+        location.href='sign-up.html'
+    </script>
+    ";
+    exit;
+}
 // password 只能大小寫
-if(preg_match('/(?=.*[a-zA-Z])/', $password) == 0){
+if(!preg_match('/^[a-zA-Z\s]+$/', $password)){
 
     echo "
     <script> 
@@ -53,17 +70,9 @@ if(preg_match('/(?=.*[a-zA-Z])/', $password) == 0){
     ";
     exit;
 }
-if((is_float($latitude) && is_float($longitude)) == 0) {
-    echo "
-    <script> 
-        alert('經緯度要是float !!');
-        location.href='sign-up.html'
-    </script>
-    ";
-    exit;
-}
+
 // phonenumber taiwan 09xxxxxxxx
-if(preg_match("/^09[0-9]{2}-[0-9]{3}-[0-9]{3}$/", $phonenumber) == 0) {
+if(preg_match("/^09[0-9]{8}$/", $phonenumber) == 0) {
     echo "
     <script> 
         alert('phonenumber wrong !!');
@@ -72,26 +81,34 @@ if(preg_match("/^09[0-9]{2}-[0-9]{3}-[0-9]{3}$/", $phonenumber) == 0) {
     ";
     exit;
 }
-//register
-$sql = "INSERT INTO `user` VALUES (NULL ,?, ?,?, ?, ?,?);";
-$stmt = mysqli_stmt_init($link); 
-mysqli_stmt_prepare($stmt, $sql); 
-mysqli_stmt_bind_param($stmt, 'ssisdd', $name, $password, $phonenumber, $account, $latitude, $longitude); 
-mysqli_stmt_execute($stmt); 
-
-$result = $stmt->get_result();
-if (!$result){
-    die('Error: ' . mysqli_error());
-}
-else{
+if((is_double($latitude + 0) && is_double($longitude + 0)) == 0) {
     echo "
+    
     <script> 
-        alert('Register success !!');
-        location.href='index.html'
+        alert('經緯度要是float !!');
+        location.href='sign-up.html'
     </script>
     ";
     exit;
 }
+//register
+
+$sql = "INSERT INTO `user` VALUES (NULL ,?, ?,?,'0', ?,?,?, 'user');";
+$stmt = mysqli_stmt_init($link); 
+mysqli_stmt_prepare($stmt, $sql); 
+mysqli_stmt_bind_param($stmt, 'sssidd', $account, $password, $name, $phonenumber, $longitude, $latitude); 
+mysqli_stmt_execute($stmt); 
+
+$result = $stmt->get_result();
+mysqli_stmt_close($stmt);
+
+echo "
+<script> 
+    alert('Register success !!');
+    location.href='index.html'
+</script>
+";
+
 
 ?>
 
