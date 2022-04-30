@@ -53,6 +53,15 @@ if(preg_match('/(?=.*[a-zA-Z])/', $password) == 0){
     ";
     exit;
 }
+if((is_float($latitude) && is_float($longitude)) == 0) {
+    echo "
+    <script> 
+        alert('經緯度要是float !!');
+        location.href='sign-up.html'
+    </script>
+    ";
+    exit;
+}
 // phonenumber taiwan 09xxxxxxxx
 if(preg_match("/^09[0-9]{2}-[0-9]{3}-[0-9]{3}$/", $phonenumber) == 0) {
     echo "
