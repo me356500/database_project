@@ -4,8 +4,12 @@ $conn= require_once "config.php";
 $name = $_POST["Account"];
 $password = $_POST["password"];
 $password_hash=password_hash($password, PASSWORD_DEFAULT);
-$sql = "select * from user where account = '$name' and password='$password'";
-$result = mysqli_query($conn, $sql);
+$sql = "select * from user where account = ? and password = ?";
+$stmt = mysqli_stmt_init($link); 
+mysqli_stmt_prepare($stmt, $sql); 
+mysqli_stmt_bind_param($stmt, 'ss', $name, $password); 
+mysqli_stmt_execute($stmt); 
+$result = $stmt->get_result();
 if(mysqli_num_rows($result)){
     header("refresh:0;url=nav.html");
     exit;

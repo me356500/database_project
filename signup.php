@@ -64,8 +64,13 @@ if(preg_match("/^09[0-9]{2}-[0-9]{3}-[0-9]{3}$/", $phonenumber) == 0) {
     exit;
 }
 //register
-$q= "INSERT INTO `user` VALUES (NULL ,'$name', '$password','$phonenumber', '$account', '$latitude','$longitude');";
-$result = mysqli_query($link, $q);
+$sql = "INSERT INTO `user` VALUES (NULL ,?, ?,?, ?, ?,?);";
+$stmt = mysqli_stmt_init($link); 
+mysqli_stmt_prepare($stmt, $sql); 
+mysqli_stmt_bind_param($stmt, 'ssisdd', $name, $password, $phonenumber, $account, $latitude, $longitude); 
+mysqli_stmt_execute($stmt); 
+
+$result = $stmt->get_result();
 if (!$result){
     die('Error: ' . mysqli_error());
 }
