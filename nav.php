@@ -38,6 +38,7 @@
     <div class="tab-content">
       <div id="home" class="tab-pane fade in active">
         <h3>Profile</h3>
+        <a href="index.html">Logout</a>
         <div class="row">
           <div class="col-xs-10">
 
@@ -341,6 +342,7 @@
 
       <form action="shop_reg.php" class="fh5co-form animate-box" data-animate-effect="fadeIn" method="post">
         <h3> Start a business </h3>
+        <a href="index.html">Logout</a>
         <div class="form-group ">
           <div class="row">
             <div class="col-xs-2">
