@@ -4,6 +4,18 @@ header("Content-Type: text/html; charset=utf8");
 include 'config.php';
 $name=$_POST["name"];
 $password=$_POST["password"];
+
+if(!preg_match('/^[0-9a-zA-Z\s]+$/', $password)){
+
+    echo "
+    <script> 
+        alert('password 只能是大小寫英文及數字 !!');
+        location.href='sign-up.html'
+    </script>
+    ";
+    exit;
+}
+
 $password_hash=password_hash($password,PASSWORD_DEFAULT);
 $phonenumber=$_POST["phonenumber"];
 $account=$_POST["Account"];
@@ -49,27 +61,18 @@ if($repassword != $password) {
     ";
     exit;
 }
-if(!preg_match('/^[a-zA-Z\s]+$/', $account)){
+if(!preg_match('/^[0-9a-zA-Z\s]+$/', $account)){
 
     echo "
     <script> 
-        alert('account 只能是大小寫英文 !!');
+        alert('account 只能是大小寫英文及數字 !!');
         location.href='sign-up.html'
     </script>
     ";
     exit;
 }
 // password 只能大小寫
-if(!preg_match('/^[a-zA-Z\s]+$/', $password)){
 
-    echo "
-    <script> 
-        alert('password 只能是大小寫英文 !!');
-        location.href='sign-up.html'
-    </script>
-    ";
-    exit;
-}
 
 // phonenumber taiwan 09xxxxxxxx
 if(preg_match("/^09[0-9]{8}$/", $phonenumber) == 0) {
@@ -86,6 +89,26 @@ if((is_double($latitude + 0) && is_double($longitude + 0)) == 0) {
     
     <script> 
         alert('經緯度要是float !!');
+        location.href='sign-up.html'
+    </script>
+    ";
+    exit;
+}
+if($longitude > 360 || $longitude < 0) {
+    echo "
+    
+    <script> 
+        alert('longitude範圍錯誤 !!');
+        location.href='sign-up.html'
+    </script>
+    ";
+    exit;
+}
+if($latitude > 90 || $latitude < -90 ) {
+    echo "
+    
+    <script> 
+        alert('latitude範圍錯誤 !!');
         location.href='sign-up.html'
     </script>
     ";
