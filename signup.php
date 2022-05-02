@@ -71,8 +71,17 @@ if(!preg_match('/^[0-9a-zA-Z\s]+$/', $account)){
     ";
     exit;
 }
-// password 只能大小寫
+// 名字
+if(!preg_match('/^[a-zA-Z\s]+$/', $name)){
 
+    echo "
+    <script> 
+        alert('name 只能是大小寫英文 !!');
+        location.href='sign-up.html'
+    </script>
+    ";
+    exit;
+}
 
 // phonenumber taiwan 09xxxxxxxx
 if(preg_match("/^09[0-9]{8}$/", $phonenumber) == 0) {

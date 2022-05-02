@@ -81,7 +81,61 @@
              echo "0";
              echo $rs[0];
             ?>
-            , walletbalance:
+            , location: 
+            <?php
+             $sql = "select latitude,longitude from user where account = ?";
+             $stmt = mysqli_stmt_init($link); 
+             mysqli_stmt_prepare($stmt, $sql); 
+             mysqli_stmt_bind_param($stmt, 's', $id); 
+             mysqli_stmt_execute($stmt); 
+             $data =$stmt->get_result();
+             $rs=mysqli_fetch_row($data);
+             
+             echo $rs[0];
+             echo ", ";
+             echo $rs[1];
+            ?>
+            
+            <button type="button " style="margin-left: 5px;" class=" btn btn-info " data-toggle="modal"
+            data-target="#location">edit location</button>
+            
+            <!--  -->
+            <div class="modal fade" id="location"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+              <div class="modal-dialog  modal-sm">
+              
+                <div class="modal-content">
+                <form action="user_update.php" method="POST">
+                  <?php
+                  $acc = $_GET['id'];
+                  echo '<input type="hidden" name="uname" value='.$acc.'>';
+                  ?>
+
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">edit location</h4>
+                  </div>
+                  <div class="modal-body">
+                    <label class="control-label " for="latitude">latitude</label>
+                    <input type="text" class="form-control" id="latitude" placeholder="enter latitude" name = "latitude">
+                      <br>
+                      <label class="control-label " for="longitude">longitude</label>
+                    <input type="text" class="form-control" id="longitude" placeholder="enter longitude" name = "longitude">
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-default" >Edit</button>
+                  </div>
+
+                </form>
+                </div>
+               
+              </div>
+            </div>
+            
+            
+
+
+            <!--  -->
+            walletbalance:
             <?php
              $sql = "select balance from user where account = ?";
              $stmt = mysqli_stmt_init($link); 
@@ -285,35 +339,44 @@
       </div>
       <div id="menu1" class="tab-pane fade">
 
+      <form action="shop_reg.php" class="fh5co-form animate-box" data-animate-effect="fadeIn" method="post">
         <h3> Start a business </h3>
         <div class="form-group ">
           <div class="row">
             <div class="col-xs-2">
               <label for="ex5">shop name</label>
-              <input class="form-control" id="ex5" placeholder="macdonald" type="text" >
+              <input class="form-control" id="ex5" placeholder="macdonald" type="text" name = "shop_name">
             </div>
             <div class="col-xs-2">
               <label for="ex5">shop category</label>
-              <input class="form-control" id="ex5" placeholder="fast food" type="text" >
+              <input class="form-control" id="ex5" placeholder="fast food" type="text" name = "category">
             </div>
             <div class="col-xs-2">
               <label for="ex6">latitude</label>
-              <input class="form-control" id="ex6" placeholder="121.00028167648875" type="text" >
+              <input class="form-control" id="ex6" placeholder="121.00028167648875" type="text" name = "latitude">
             </div>
             <div class="col-xs-2">
               <label for="ex8">longitude</label>
-              <input class="form-control" id="ex8" placeholder="24.78472733371133" type="text" >
+              <input class="form-control" id="ex8" placeholder="24.78472733371133" type="text" name = "longitude">
             </div>
           </div>
         </div>
-
-
-
+        
+       
+        
+        <?php
+        $acc = $_GET['id'];
+        echo '<input type="hidden" name="uname" value='.$acc.'>';
+        ?>
         <div class=" row" style=" margin-top: 25px;">
           <div class=" col-xs-3">
-            <button type="button" class="btn btn-primary"  >register</button>
+            
+            <button type="submit" class="btn btn-primary"  >register</button>
           </div>
         </div>
+        </form>
+
+        
         <hr>
         <h3>ADD</h3>
 
