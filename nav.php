@@ -370,8 +370,20 @@
         ?>
         <div class=" row" style=" margin-top: 25px;">
           <div class=" col-xs-3">
+            <?php
+             
+             $acc = $_GET['id'];
+             //account 已經過濾過不用防injection
+             $sql = "select * from store where uid = (select uid from user where account = '$acc')";
+             $data = mysqli_query($link, $sql);
+             if(mysqli_num_rows($data)) {
+                echo '<button type="submit" class="btn btn-primary" disabled >register</button>';
+             }
+             else {
+              echo '<button type="submit" class="btn btn-primary" >register</button>';
+             }
             
-            <button type="submit" class="btn btn-primary"  >register</button>
+            ?>
           </div>
         </div>
         </form>
