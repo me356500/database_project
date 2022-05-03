@@ -3,7 +3,7 @@
 header("Content-Type: text/html; charset=utf8");
 include 'config.php';
 
-$uname = $_POST["uname"];
+$account = $_POST["account"];
 $latitude=$_POST["latitude"];
 $longitude=$_POST['longitude'];
 
@@ -12,7 +12,7 @@ if(($latitude && $longitude ) == 0) {
     echo "
     <script> 
         alert('Please fill all the blank!!');
-        location.href=  'nav.php?id=$uname';
+        location.href=  'nav.php?id=$account';
     </script>
     
     ";
@@ -25,7 +25,7 @@ if((is_double($latitude + 0) && is_double($longitude + 0)) == 0) {
     
     <script> 
         alert('經緯度要是float !!');
-        location.href=  'nav.php?id=$uname';
+        location.href=  'nav.php?id=$account';
     </script>
     ";
     exit;
@@ -35,7 +35,7 @@ if($longitude > 180 || $longitude < -180) {
     
     <script> 
         alert('longitude範圍錯誤 !!');
-        location.href=  'nav.php?id=$uname';
+        location.href=  'nav.php?id=$account';
     </script>
     ";
     exit;
@@ -45,21 +45,21 @@ if($latitude > 90 || $latitude < -90 ) {
     
     <script> 
         alert('latitude範圍錯誤 !!');
-        location.href=  'nav.php?id=$uname';
+        location.href=  'nav.php?id=$account';
     </script>
     ";
     exit;
 }
-//可以直接用uname去拉資料庫，account只為大小寫英文
-$sql = "UPDATE user SET latitude='$latitude' WHERE account = '$uname'";
+//可以直接用account去拉資料庫，account只為大小寫英文
+$sql = "UPDATE user SET latitude='$latitude' WHERE account = '$account'";
 $data = mysqli_query($link, $sql);
-$sql = "UPDATE user SET longitude='$longitude' WHERE account = '$uname'";
+$sql = "UPDATE user SET longitude='$longitude' WHERE account = '$account'";
 $data = mysqli_query($link, $sql);
 
 echo "
 <script> 
     alert('Update success !!');
-    location.href=  'nav.php?id=$uname';
+    location.href=  'nav.php?id=$account';
 </script>
 ";
 
