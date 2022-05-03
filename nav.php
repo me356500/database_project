@@ -51,50 +51,49 @@
               mysqli_stmt_bind_param($stmt, 's', $id); 
               mysqli_stmt_execute($stmt); 
               $data =$stmt->get_result();
-              
             ?>
             Accouont: 
             <?php
-             $rs=mysqli_fetch_row($data);
-             echo $rs[0];
+              $rs=mysqli_fetch_row($data);
+              echo $rs[0];
             ?>
             , Identity:
             <?php
-             $sql = "select identity from user where account = ?";
-             $stmt = mysqli_stmt_init($link); 
-             mysqli_stmt_prepare($stmt, $sql); 
-             mysqli_stmt_bind_param($stmt, 's', $id); 
-             mysqli_stmt_execute($stmt); 
-             $data =$stmt->get_result();
+              $sql = "select identity from user where account = ?";
+              $stmt = mysqli_stmt_init($link); 
+              mysqli_stmt_prepare($stmt, $sql); 
+              mysqli_stmt_bind_param($stmt, 's', $id); 
+              mysqli_stmt_execute($stmt); 
+              $data =$stmt->get_result();
             
-             $rs=mysqli_fetch_row($data);
-             echo $rs[0];
+              $rs=mysqli_fetch_row($data);
+              echo $rs[0];
             ?> 
             , PhoneNumber:
             <?php
-             $sql = "select phonenumber from user where account = ?";
-             $stmt = mysqli_stmt_init($link); 
-             mysqli_stmt_prepare($stmt, $sql); 
-             mysqli_stmt_bind_param($stmt, 's', $id); 
-             mysqli_stmt_execute($stmt); 
-             $data =$stmt->get_result();
-             $rs=mysqli_fetch_row($data);
-             echo "0";
-             echo $rs[0];
+              $sql = "select phonenumber from user where account = ?";
+              $stmt = mysqli_stmt_init($link); 
+              mysqli_stmt_prepare($stmt, $sql); 
+              mysqli_stmt_bind_param($stmt, 's', $id); 
+              mysqli_stmt_execute($stmt); 
+              $data =$stmt->get_result();
+              $rs=mysqli_fetch_row($data);
+              echo "0";
+              echo $rs[0];
             ?>
             , location: 
             <?php
-             $sql = "select latitude,longitude from user where account = ?";
-             $stmt = mysqli_stmt_init($link); 
-             mysqli_stmt_prepare($stmt, $sql); 
-             mysqli_stmt_bind_param($stmt, 's', $id); 
-             mysqli_stmt_execute($stmt); 
-             $data =$stmt->get_result();
-             $rs=mysqli_fetch_row($data);
+              $sql = "select latitude,longitude from user where account = ?";
+              $stmt = mysqli_stmt_init($link); 
+              mysqli_stmt_prepare($stmt, $sql); 
+              mysqli_stmt_bind_param($stmt, 's', $id); 
+              mysqli_stmt_execute($stmt); 
+              $data =$stmt->get_result();
+              $rs=mysqli_fetch_row($data);
              
-             echo $rs[0];
-             echo ", ";
-             echo $rs[1];
+              echo $rs[0];
+              echo ", ";
+              echo $rs[1];
             ?>
             
             <button type="button " style="margin-left: 5px;" class=" btn btn-info " data-toggle="modal"
@@ -107,8 +106,8 @@
                 <div class="modal-content">
                 <form action="user_update.php" method="POST">
                   <?php
-                  $acc = $_GET['id'];
-                  echo '<input type="hidden" name="uname" value='.$acc.'>';
+                    $acc = $_GET['id'];
+                    echo '<input type="hidden" name="uname" value='.$acc.'>';
                   ?>
 
                   <div class="modal-header">
@@ -138,14 +137,14 @@
             <!--  -->
             walletbalance:
             <?php
-             $sql = "select balance from user where account = ?";
-             $stmt = mysqli_stmt_init($link); 
-             mysqli_stmt_prepare($stmt, $sql); 
-             mysqli_stmt_bind_param($stmt, 's', $id); 
-             mysqli_stmt_execute($stmt); 
-             $data =$stmt->get_result();
-             $rs=mysqli_fetch_row($data);
-             echo $rs[0];
+              $sql = "select balance from user where account = ?";
+              $stmt = mysqli_stmt_init($link); 
+              mysqli_stmt_prepare($stmt, $sql); 
+              mysqli_stmt_bind_param($stmt, 's', $id); 
+              mysqli_stmt_execute($stmt); 
+              $data =$stmt->get_result();
+              $rs=mysqli_fetch_row($data);
+              echo $rs[0];
             ?> 
             
             <!-- Modal -->
@@ -159,7 +158,7 @@
                     <h4 class="modal-title">Add value</h4>
                   </div>
                   <div class="modal-body">
-                    <input type="text" class="form-control" id="Meal" placeholder="enter add value">
+                    <input type="text" class="form-control" id="value" placeholder="enter add value">
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Add</button>
@@ -176,19 +175,18 @@
              -->
         <h3>Search</h3>
         <div class=" row  col-xs-8">
-          <form class="form-horizontal" action="/action_page.php">
+          <form class="form-horizontal" action="action_page.php" method="POST">
             <div class="form-group">
               <label class="control-label col-sm-1" for="Shop">Shop</label>
               <div class="col-sm-5">
-                <input type="text" class="form-control" placeholder="Enter Shop name">
+                <input type="text" class="form-control" placeholder="Enter Shop name" name="shopname">
               </div>
               <label class="control-label col-sm-1" for="distance">distance</label>
               <div class="col-sm-5">
 
-
-                <select class="form-control" id="sel1">
+                <select class="form-control" id="sel1" name="distance">
                   <option>near</option>
-                  <option>medium </option>
+                  <option>medium</option>
                   <option>far</option>
 
                 </select>
@@ -201,22 +199,24 @@
               <label class="control-label col-sm-1" for="Price">Price</label>
               <div class="col-sm-2">
 
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" name="lowerbound">
 
               </div>
               <label class="control-label col-sm-1" for="~">~</label>
               <div class="col-sm-2">
 
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" name="upperbound">
 
               </div>
               <label class="control-label col-sm-1" for="Meal">Meal</label>
               <div class="col-sm-5">
-                <input type="text" list="Meals" class="form-control" id="Meal" placeholder="Enter Meal">
+                <input type="text" list="Meals" class="form-control" id="Meal" placeholder="Enter Meal" name="meal">
+              <!--
                 <datalist id="Meals">
                   <option value="Hamburger">
                   <option value="coffee">
                 </datalist>
+              -->
               </div>
             </div>
 
@@ -225,45 +225,67 @@
             
               
                 <div class="col-sm-5">
-                  <input type="text" list="categorys" class="form-control" id="category" placeholder="Enter shop category">
+                  <input type="text" list="categorys" class="form-control" id="category" placeholder="Enter shop category" name="category">
+                <!--
                   <datalist id="categorys">
                     <option value="fast food">
                
                   </datalist>
+                -->
                 </div>
                 <button type="submit" style="margin-left: 18px;"class="btn btn-primary">Search</button>
               
             </div>
           </form>
         </div>
-        <div class="row">
-          <div class="  col-xs-8">
-            <table class="table" style=" margin-top: 15px;">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
+    <div class="row">
+      <div class="  col-xs-8">
+        <table class="table" style=" margin-top: 15px;">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+                  
+              <th scope="col">shop name</th>
+              <th scope="col">shop category</th>
+              <th scope="col">Distance</th>
                 
-                  <th scope="col">shop name</th>
-                  <th scope="col">shop category</th>
-                  <th scope="col">Distance</th>
-               
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">1</th>
-               
-                  <td>macdonald</td>
-                  <td>fast food</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
                 
-                  <td>near </td>
-                  <td>  <button type="button" class="btn btn-info " data-toggle="modal" data-target="#macdonald">Open menu</button></td>
+              <?php
+                $sql = "select distinct SID, name, foodtype, latitude, longitude from store order by SID";
+                $stmt = mysqli_stmt_init($link); 
+                mysqli_stmt_prepare($stmt, $sql); 
+                mysqli_stmt_execute($stmt); 
+                $data =$stmt->get_result();
+                $i = 1;
+                while($rs=mysqli_fetch_row($data)) {
+                  echo '<tr>';
+                  echo "<th scope=\"row\">" . $i . "</th>";
+                  echo "<td>" . $rs[1] . "</td>";
+                  echo "<td>" . $rs[2] . "</td>";
+                  echo "<td>near<td>";
+                  echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#macdonald\">Open menu</button></td>";
+                  echo '</tr>';
+                  $i++;
+                }
+              ?>
+                  <!--
+                    <th scope="row">1</th>
+                
+                    <td>macdonald</td>
+                    <td>fast food</td>
+                  
+                    <td>near </td>
+                    <td>  <button type="button" class="btn btn-info " data-toggle="modal" data-target="#macdonald">Open menu</button></td>
+                  -->
+            </tr>
             
-                </tr>
-           
 
-              </tbody>
-            </table>
+          </tbody>
+        </table>
 
                 <!-- Modal -->
   <div class="modal fade" id="macdonald"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
