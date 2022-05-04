@@ -59,10 +59,9 @@ $data = mysqli_query($link, $sql);
 echo "
 <script> 
     alert('Update success !!');
-    location.href=  'nav.php?id=$uname';
+    location.href=  'nav.php?id=$uname&op=0';
 </script>
 ";
 
 
 ?>
-

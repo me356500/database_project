@@ -176,6 +176,10 @@
         <h3>Search</h3>
         <div class=" row  col-xs-8">
           <form class="form-horizontal" action="action_page.php" method="POST">
+            <?php
+              $acc = $_GET['id'];
+              echo '<input type="hidden" name="uname" value='.$acc.'>';
+            ?>
             <div class="form-group">
               <label class="control-label col-sm-1" for="Shop">Shop</label>
               <div class="col-sm-5">
@@ -255,7 +259,30 @@
             <tr>
                 
               <?php
-                $sql = "select distinct SID, name, foodtype, latitude, longitude from store order by SID";
+                $op = $_GET['op'];
+                if($op == 1){
+                  $lowerbound=$_GET["lowerbound"];
+                  $upperbound=$_GET["upperbound"];
+                  $category=$_GET["category"];
+                  $distance=$_GET["distance"];
+                  $meal=$_GET["meal"];
+                  $name=$_GET["shopname"];
+                  if($lowerbound == ''){
+                    $lowerbound = '0';
+                  }
+                  if($upperbound == ''){
+                    $upperbound = '999999';
+                  }
+                }
+                else{
+                  $lowerbound = '0';
+                  $upperbound = '999999';
+                  $category = '';
+                  $distance = 'near';
+                  $meal = '';
+                  $name = '';
+                }
+                $sql = "select distinct store.SID, store.name, store.foodtype, store.latitude, store.longitude from store, goods where store.name like '%$name%' and foodtype like '%$category%' and goods.SID = store.SID and goods.price >= $lowerbound and goods.price <= $upperbound and goods.name like '%$meal%'";
                 $stmt = mysqli_stmt_init($link); 
                 mysqli_stmt_prepare($stmt, $sql); 
                 mysqli_stmt_execute($stmt); 
@@ -267,7 +294,7 @@
                   echo "<td>" . $rs[1] . "</td>";
                   echo "<td>" . $rs[2] . "</td>";
                   echo "<td>near<td>";
-                  echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#macdonald\">Open menu</button></td>";
+                  echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">Open menu</button></td>";
                   echo '</tr>';
                   $i++;
                 }
@@ -288,7 +315,7 @@
         </table>
 
                 <!-- Modal -->
-  <div class="modal fade" id="macdonald"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal fade" id="1"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
     
       <!-- Modal content-->
@@ -317,6 +344,7 @@
                 </tr>
               </thead>
               <tbody>
+                
                 <tr>
                   <th scope="row">1</th>
                   <td><img src="Picture/1.jpg" with="50" heigh="10" alt="Hamburger"></td>
@@ -353,9 +381,10 @@
           <button type="button" class="btn btn-default" data-dismiss="modal">Order</button>
         </div>
       </div>
-      
     </div>
   </div>
+
+
           </div>
 
         </div>
