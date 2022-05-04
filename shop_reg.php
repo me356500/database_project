@@ -3,7 +3,7 @@
 header("Content-Type: text/html; charset=utf8");
 include 'config.php';
 $name=$_POST["shop_name"];
-$uname = $_POST["uname"];
+$account = $_POST["account"];
 $category = $_POST["category"];
 $latitude=$_POST["latitude"];
 $longitude=$_POST['longitude'];
@@ -13,7 +13,7 @@ if(($name && $latitude && $longitude && $category) == 0) {
     echo "
     <script> 
         alert('Please fill all the blank!!');
-        location.href=  'nav.php?id=$uname&op=0';
+        location.href=  'nav.php?id=$account&op=0';
     </script>
     
     ";
@@ -33,7 +33,7 @@ if(mysqli_num_rows($racc)) {
     echo "
     <script> 
         alert('Shop_name has been registered !!');
-        location.href=  'nav.php?id=$uname&op=0';
+        location.href=  'nav.php?id=$account&op=0';
     </script>
     ";
     exit;
@@ -43,7 +43,7 @@ if((is_double($latitude + 0) && is_double($longitude + 0)) == 0) {
     
     <script> 
         alert('經緯度要是float !!');
-        location.href=  'nav.php?id=$uname&op=0';
+        location.href=  'nav.php?id=$account&op=0';
     </script>
     ";
     exit;
@@ -53,7 +53,7 @@ if($longitude > 180 || $longitude < -180) {
     
     <script> 
         alert('longitude範圍錯誤 !!');
-        location.href=  'nav.php?id=$uname&op=0';
+        location.href=  'nav.php?id=$account&op=0';
     </script>
     ";
     exit;
@@ -63,18 +63,18 @@ if($latitude > 90 || $latitude < -90 ) {
     
     <script> 
         alert('latitude範圍錯誤 !!');
-        location.href=  'nav.php?id=$uname&op=0';
+        location.href=  'nav.php?id=$account&op=0';
     </script>
     ";
     exit;
 }
 //可以直接用uname去拉資料庫，account只為大小寫英文
-$sql = "select UID from user where account = '$uname' ";
+$sql = "select UID from user where account = '$account' ";
 $data = mysqli_query($link, $sql);
 $rs = mysqli_fetch_row($data);
 $uid = $rs[0];
 
-$sql = "select phonenumber from user where account = '$uname' ";
+$sql = "select phonenumber from user where account = '$account' ";
 $data = mysqli_query($link, $sql);
 $rs = mysqli_fetch_row($data);
 $phonenumber = $rs[0];
@@ -91,7 +91,7 @@ mysqli_stmt_close($stmt);
 echo "
 <script> 
     alert('Register success !!');
-    location.href=  'nav.php?id=$uname&op=0';
+    location.href=  'nav.php?id=$account&op=0';
 </script>
 ";
 

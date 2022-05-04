@@ -108,7 +108,7 @@
                 <form action="user_update.php" method="POST">
                   <?php
                   $acc = $_GET['id'];
-                  echo '<input type="hidden" name="uname" value='.$acc.'>';
+                  echo '<input type="hidden" name="account" value='.$acc.'>';
                   ?>
 
                   <div class="modal-header">
@@ -378,7 +378,7 @@
 
         <?php
         $acc = $_GET['id'];
-        echo '<input type="hidden" name="uname" value='.$acc.'>';
+        echo '<input type="hidden" name="account" value='.$acc.'>';
         ?>
         <div class=" row" style=" margin-top: 25px;">
           <div class=" col-xs-3">
