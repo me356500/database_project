@@ -347,19 +347,79 @@
           <div class="row">
             <div class="col-xs-2">
               <label for="ex5">shop name</label>
-              <input class="form-control" id="ex5" placeholder="macdonald" type="text" name = "shop_name">
+              <?php
+              $sql = "select store.name from user,store where user.UID=store.UID";
+              $stmt = mysqli_stmt_init($link); 
+              mysqli_stmt_prepare($stmt, $sql);                
+              mysqli_stmt_execute($stmt); 
+              $data =$stmt->get_result();              
+              
+              if( !empty($rs=mysqli_fetch_row($data))){
+                
+                echo "<input class='form-control' id='ex5' type='text' value='$rs[0]' name = 'shop_name'><br>";
+              }
+              else if( empty($rs=mysqli_fetch_row($data))){
+                
+                echo "<input class='form-control' id='ex5' type='text' placeholder='macdonald' name = 'shop_name'><br>";
+              }               
+              ?> 
+              
+              
             </div>
             <div class="col-xs-2">
               <label for="ex5">shop category</label>
-              <input class="form-control" id="ex5" placeholder="fast food" type="text" name = "category">
+              <?php
+              $sql = "select store.foodtype from user,store where user.UID=store.UID";
+              $stmt = mysqli_stmt_init($link); 
+              mysqli_stmt_prepare($stmt, $sql);                
+              mysqli_stmt_execute($stmt); 
+              $data =$stmt->get_result();              
+              if( !empty($rs=mysqli_fetch_row($data))){
+                echo "<input class='form-control' id='ex5' type='text' value='$rs[0]' name = 'category'><br>";
+              }
+              else if( empty($rs=mysqli_fetch_row($data))){
+                
+                echo "<input class='form-control' id='ex5' type='text' placeholder='fastfood' name = 'category'><br>";
+              }  
+              ?> 
+              
             </div>
             <div class="col-xs-2">
               <label for="ex6">latitude</label>
-              <input class="form-control" id="ex6" placeholder="121.00028167648875" type="text" name = "latitude">
+              <?php
+              $sql = "select store.latitude from user,store where user.UID=store.UID";
+              $stmt = mysqli_stmt_init($link); 
+              mysqli_stmt_prepare($stmt, $sql);                
+              mysqli_stmt_execute($stmt); 
+              $data =$stmt->get_result();              
+              if( !empty($rs=mysqli_fetch_row($data))){
+                echo "<input class='form-control' id='ex5' type='text' value='$rs[0]' name = 'latitude'><br>";
+              }
+              else if( empty($rs=mysqli_fetch_row($data))){
+                
+                echo "<input class='form-control' id='ex5' type='text' placeholder='80.5' name = 'latitude'><br>";
+              }  
+              ?> 
+              
             </div>
             <div class="col-xs-2">
               <label for="ex8">longitude</label>
-              <input class="form-control" id="ex8" placeholder="24.78472733371133" type="text" name = "longitude">
+              
+              <?php
+              $sql = "select store.longitude from user,store where user.UID=store.UID";
+              $stmt = mysqli_stmt_init($link); 
+              mysqli_stmt_prepare($stmt, $sql);                
+              mysqli_stmt_execute($stmt); 
+              $data =$stmt->get_result();              
+              if( !empty($rs=mysqli_fetch_row($data))){
+                echo "<input class='form-control' id='ex5' type='text' value='$rs[0]' name = 'longitude'><br>";
+              }
+              else if( empty($rs=mysqli_fetch_row($data))){
+                
+                echo "<input class='form-control' id='ex5' type='text' placeholder='23.5' name = 'longitude'><br>";
+              }  
+              ?> 
+              
             </div>
           </div>
         </div>
@@ -419,7 +479,12 @@
               <label for="ex12">上傳圖片</label>
               <input id="myFile" type="file" name="myFile" multiple class="file-loading">           
               <button style=" margin-top: 15px;" input type="submit" class="btn btn-primary">Add</button>
-              </form>
+              <?php
+                $acc = $_GET['id'];
+                echo '<input type="hidden" name="uname" value='.$acc.'>';
+                ?>
+                 
+            </form>
             </div>
           </div>
         </div>
@@ -444,10 +509,10 @@
               </thead>
               <tbody>
                 <tr>
-                  <th scope="row">1</th>
-                  <td><img src="Picture/1.jpg" with="50" heigh="10" alt="Hamburger"></td>
+                <form action="user_update.php" method="POST">
                   <?php
-                    $sql = "select distinct PID, name, price, quantity,img  from goods ";
+                    $sql = "select distinct goods.PID, img, imgtype,goods.name, goods.price, goods.quantity from goods,store where goods.SID=store.SID ";
+                                 
                     $stmt = mysqli_stmt_init($link); 
                     mysqli_stmt_prepare($stmt, $sql); 
                     mysqli_stmt_execute($stmt); 
@@ -456,27 +521,19 @@
                     while($rs=mysqli_fetch_row($data)) {
                         echo '<tr>';
                         echo "<th scope=\"row\">" . $i . "</th>";
-                        
-                        echo "<td>" . $rs[1] . "</td>";
-                        echo "<td>" . $rs[2] . "</td>";
+                        echo '<td><img src="data:' . $rs[2] . ';base64,' . $rs[1] . '" /></td>';                     
                         echo "<td>" . $rs[3] . "</td>";
+                        echo "<td>" . $rs[4] . "</td>";
+                        echo "<td>" . $rs[5] . "</td>";                   
+                        echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">Edit</button></td>";
                         
-                        /*
-                        $img=$rs["4"];
-                        $logodata = $img;
-                        echo "<td>" . $logodata . "</td>";
-                                           */  
-                        //echo '</tr>';
-                        $i++;
+                        
+                        echo "<td>  <button type=\"button\" class=\"btn btn-danger \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">delete</button></td>";
+                        echo '</tr>';
+                         $i++;
                     }
                     ?>
-                  <?php
-                  /*<td>Hamburger</td>
-                
-                  <td>80 </td>
-                  <td>20 </td>
-                  */
-?>
+                  </form>
                   <td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#Hamburger-1">
                   Edit
                   </button></td>
@@ -515,10 +572,7 @@
                 <tr>
                   <th scope="row">2</th>
                   <td><img src="Picture/2.jpg" with="10" heigh="10" alt="coffee"></td>
-                  <td>coffee</td>
-               
-                  <td>50 </td>
-                  <td>20</td>
+                  
                   <td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#coffee-1">
                     Edit
                     </button></td>
