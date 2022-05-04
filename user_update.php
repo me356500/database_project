@@ -12,7 +12,7 @@ if(($latitude && $longitude ) == 0) {
     echo "
     <script> 
         alert('Please fill all the blank!!');
-        location.href=  'nav.php?id=$uname';
+        location.href= 'nav.php?id=$uname';
     </script>
     
     ";

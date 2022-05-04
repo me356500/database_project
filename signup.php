@@ -103,7 +103,7 @@ if((is_double($latitude + 0) && is_double($longitude + 0)) == 0) {
     ";
     exit;
 }
-if($longitude > 360 || $longitude < 0) {
+if($longitude > 180 || $longitude < -180) {
     echo "
     
     <script> 
@@ -143,4 +143,3 @@ echo "
 
 
 ?>
-
