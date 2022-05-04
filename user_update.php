@@ -12,7 +12,7 @@ if(($latitude && $longitude ) == 0) {
     echo "
     <script> 
         alert('Please fill all the blank!!');
-        location.href=  'nav.php?id=$account';
+        location.href=  'nav.php?id=$account&op=0';
     </script>
     
     ";
@@ -25,7 +25,7 @@ if((is_double($latitude + 0) && is_double($longitude + 0)) == 0) {
     
     <script> 
         alert('經緯度要是float !!');
-        location.href=  'nav.php?id=$account';
+        location.href=  'nav.php?id=$account&op=0';
     </script>
     ";
     exit;
@@ -35,7 +35,7 @@ if($longitude > 180 || $longitude < -180) {
     
     <script> 
         alert('longitude範圍錯誤 !!');
-        location.href=  'nav.php?id=$account';
+        location.href=  'nav.php?id=$account&op=0';
     </script>
     ";
     exit;
@@ -45,7 +45,7 @@ if($latitude > 90 || $latitude < -90 ) {
     
     <script> 
         alert('latitude範圍錯誤 !!');
-        location.href=  'nav.php?id=$account';
+        location.href=  'nav.php?id=$account&op=0';
     </script>
     ";
     exit;
@@ -59,7 +59,7 @@ $data = mysqli_query($link, $sql);
 echo "
 <script> 
     alert('Update success !!');
-    location.href=  'nav.php?id=$account';
+    location.href=  'nav.php?id=$account&op=0';
 </script>
 ";
 

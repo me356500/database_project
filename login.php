@@ -12,7 +12,7 @@ mysqli_stmt_execute($stmt);
 $result = $stmt->get_result();
 
 if(mysqli_num_rows($result)){
-    header('Location:nav.php?id='.$account);
+    header("Location:nav.php?id=".$account."&op=0");
     exit;
 }
 else {

@@ -250,6 +250,18 @@
                 </tr>
               </thead>
               <tbody>
+                <?php
+                  $id = $_GET['id'];
+                  $op = $_GET['op'];
+                  if ($op == 0) {
+
+                  }
+                  else {
+                    
+
+
+                  }
+                ?>
                 <tr>
                   <th scope="row">1</th>
                
@@ -363,9 +375,7 @@
             </div>
           </div>
         </div>
-        
-       
-        
+
         <?php
         $acc = $_GET['id'];
         echo '<input type="hidden" name="uname" value='.$acc.'>';
@@ -415,7 +425,7 @@
 
 
           <div class="row" style=" margin-top: 25px;">
-
+          
             <div class=" col-xs-3">
               <label for="ex12">上傳圖片</label>
               <input id="myFile" type="file" name="myFile" multiple class="file-loading">
@@ -425,6 +435,7 @@
 
               <button style=" margin-top: 15px;" type="button" class="btn btn-primary">Add</button>
             </div>
+          
           </div>
         </div>
 
