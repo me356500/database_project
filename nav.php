@@ -394,39 +394,38 @@
         <hr>
         <h3>ADD</h3>
 
+        <form action="shopadd.php" method="post" Enctype="multipart/form-data">
         <div class="form-group ">
           <div class="row">
 
             <div class="col-xs-6">
               <label for="ex3">meal name</label>
-              <input class="form-control" id="ex3" type="text">
+              <input class="form-control" id="ex3" type="text" name = "mealname">
             </div>
           </div>
           <div class="row" style=" margin-top: 15px;">
             <div class="col-xs-3">
               <label for="ex7">price</label>
-              <input class="form-control" id="ex7" type="text">
+              <input class="form-control" id="ex7" type="text" name = "price">
             </div>
             <div class="col-xs-3">
               <label for="ex4">quantity</label>
-              <input class="form-control" id="ex4" type="text">
+              <input class="form-control" id="ex4" type="text" name = "quantity">
             </div>
           </div>
-
-
+      
           <div class="row" style=" margin-top: 25px;">
-
             <div class=" col-xs-3">
               <label for="ex12">上傳圖片</label>
-              <input id="myFile" type="file" name="myFile" multiple class="file-loading">
-
-            </div>
-            <div class=" col-xs-3">
-
-              <button style=" margin-top: 15px;" type="button" class="btn btn-primary">Add</button>
+              <input id="myFile" type="file" name="myFile" multiple class="file-loading">           
+              <button style=" margin-top: 15px;" input type="submit" class="btn btn-primary">Add</button>
+              </form>
             </div>
           </div>
         </div>
+        </form>
+
+
 
         <div class="row">
           <div class="  col-xs-8">
@@ -447,10 +446,37 @@
                 <tr>
                   <th scope="row">1</th>
                   <td><img src="Picture/1.jpg" with="50" heigh="10" alt="Hamburger"></td>
-                  <td>Hamburger</td>
+                  <?php
+                    $sql = "select distinct PID, name, price, quantity,img  from goods ";
+                    $stmt = mysqli_stmt_init($link); 
+                    mysqli_stmt_prepare($stmt, $sql); 
+                    mysqli_stmt_execute($stmt); 
+                    $data =$stmt->get_result();
+                    $i = 1;
+                    while($rs=mysqli_fetch_row($data)) {
+                        echo '<tr>';
+                        echo "<th scope=\"row\">" . $i . "</th>";
+                        
+                        echo "<td>" . $rs[1] . "</td>";
+                        echo "<td>" . $rs[2] . "</td>";
+                        echo "<td>" . $rs[3] . "</td>";
+                        
+                        /*
+                        $img=$rs["4"];
+                        $logodata = $img;
+                        echo "<td>" . $logodata . "</td>";
+                                           */  
+                        //echo '</tr>';
+                        $i++;
+                    }
+                    ?>
+                  <?php
+                  /*<td>Hamburger</td>
                 
                   <td>80 </td>
                   <td>20 </td>
+                  */
+?>
                   <td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#Hamburger-1">
                   Edit
                   </button></td>
