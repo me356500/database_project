@@ -51,11 +51,11 @@ if($latitude > 90 || $latitude < -90 ) {
     exit;
 }
 //可以直接用account去拉資料庫，account只為大小寫英文
-$sql = "UPDATE user SET latitude='$latitude' WHERE account = '$account'";
-$data = mysqli_query($link, $sql);
-$sql = "UPDATE user SET longitude='$longitude' WHERE account = '$account'";
-$data = mysqli_query($link, $sql);
-
+$sql = "UPDATE user SET latitude= ? , longitude = ? WHERE account = ?";
+$stmt = mysqli_stmt_init($link); 
+mysqli_stmt_prepare($stmt, $sql); 
+mysqli_stmt_bind_param($stmt, 'dds',$latitude, $longitude, $account); 
+mysqli_stmt_execute($stmt);
 echo "
 <script> 
     alert('Update success !!');
