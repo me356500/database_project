@@ -47,6 +47,26 @@ if($quantity < 0|| $price < 0){
     ";
     exit;
   } 
+  if(floor($price)!=$price){
+    echo "
+    <script> 
+        alert('wrong format!!');
+        location.href=  'nav.php?id=$uname&op=0';
+    </script>
+    
+    ";
+    exit;
+   }
+   if(floor($quantity)!=$quantity){
+    echo "
+    <script> 
+        alert('wrong format!!');
+        location.href=  'nav.php?id=$uname&op=0';
+    </script>
+    
+    ";
+    exit;
+   }
 
 $sql = "update goods set price = ?, quantity= ? where name=?";
 
