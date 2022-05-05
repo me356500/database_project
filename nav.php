@@ -411,7 +411,7 @@
               
               if( !empty($rs=mysqli_fetch_row($data))){
                 
-                echo "<input class='form-control' id='ex5' type='text' value='$rs[0]' name = 'shop_name' disabled><br>";
+                echo "<input class='form-control' id='ex5' type='text' value='$rs[0]' name = 'shop_name' readonly><br>";
               }
               else if( empty($rs=mysqli_fetch_row($data))){
                 
@@ -426,7 +426,7 @@
               $sql = "select foodtype from store where UID = (select UID from user where account = '$id')";
               $data = mysqli_query($link, $sql);               
               if( !empty($rs=mysqli_fetch_row($data))){
-                echo "<input class='form-control' id='ex5' type='text' value='$rs[0]' name = 'category' disabled><br>";
+                echo "<input class='form-control' id='ex5' type='text' value='$rs[0]' name = 'category' readonly><br>";
               }
               else if( empty($rs=mysqli_fetch_row($data))){
                 
@@ -441,7 +441,7 @@
               $sql = "select latitude from store where UID = (select UID from user where account = '$id')";
               $data = mysqli_query($link, $sql);               
               if( !empty($rs=mysqli_fetch_row($data))){
-                echo "<input class='form-control' id='ex5' type='text' value='$rs[0]' name = 'latitude' disabled><br>";
+                echo "<input class='form-control' id='ex5' type='text' value='$rs[0]' name = 'latitude' readonly><br>";
               }
               else if( empty($rs=mysqli_fetch_row($data))){
                 
@@ -456,7 +456,7 @@
               $sql = "select longitude from store where UID = (select UID from user where account = '$id')";
               $data = mysqli_query($link, $sql);               
               if( !empty($rs=mysqli_fetch_row($data))){
-                echo "<input class='form-control' id='ex5' type='text' value='$rs[0]' name = 'longitude' disabled><br>";
+                echo "<input class='form-control' id='ex5' type='text' value='$rs[0]' name = 'longitude' readonly><br>";
               }
               else if( empty($rs=mysqli_fetch_row($data))){
                 
@@ -564,7 +564,7 @@
                         echo "<td>" . $rs[3] . "</td>";
                         echo "<td>" . $rs[4] . "</td>";
                         echo "<td>" . $rs[5] . "</td>";                   
-                        echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">Edit</button></td>";
+                        
                         echo "<td>  <button type=\"button\" class=\"btn btn-danger \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">delete</button></td>";
                         echo '</tr>';
                          $i++;
