@@ -6,17 +6,14 @@ $uname = $_POST["uname"];
 
 $price=$_POST["price"];   
 $quantity=$_POST["quantity"];
-$sql = "select  SID from user,store where user.UID=store.UID";
-$stmt = mysqli_stmt_init($link); 
-mysqli_stmt_prepare($stmt, $sql);                
-mysqli_stmt_execute($stmt); 
-$data1 =$stmt->get_result();              
-$rs1=mysqli_fetch_row($data1); 
+$sql = "select  SID from store where UID = (select UID from user where account = '$uname')"; 
+$data1 = mysqli_query($link, $sql);              
+$rs1 = mysqli_fetch_row($data1); 
 if( empty($_FILES["myFile"]["tmp_name"])){
   echo "
   <script> 
       alert('Please fill all the blank!!');
-      location.href=  'nav.php?id=$uname';
+      location.href=  'nav.php?id=$uname&op=0';
   </script>
     ";
     exit;
@@ -32,18 +29,28 @@ if(($mealname && $price && $quantity && $file) == 0) {
     echo "
     <script> 
         alert('Please fill all the blank!!');
-        location.href=  'nav.php?id=$uname';
+        location.href=  'nav.php?id=$uname&op=0';
     </script>
     
     ";
     
     exit;
 }
+if($quantity < 0|| $price < 0){
+    echo "
+    <script> 
+        alert('Cannot be negative!!');
+        location.href=  'nav.php?id=$uname&op=0';
+    </script>
+    
+    ";
+    exit;
+  } 
 if(!is_numeric($price)){
   echo "
   <script> 
       alert('wrong format!!');
-      location.href=  'nav.php?id=$uname';
+      location.href=  'nav.php?id=$uname&op=0';
   </script>
   
   ";
@@ -53,17 +60,34 @@ if(!is_numeric($quantity)){
   echo "
   <script> 
       alert('wrong format!!');
-      location.href=  'nav.php?id=$uname';
+      location.href=  'nav.php?id=$uname&op=0';
   </script>
   
   ";
   exit;
 } 
-
+if(floor($price)!=$price){
+  echo "
+  <script> 
+      alert('wrong format!!');
+      location.href=  'nav.php?id=$uname&op=0';
+  </script>
+  
+  ";
+  exit;
+ }
+ if(floor($quantity)!=$quantity){
+  echo "
+  <script> 
+      alert('wrong format!!');
+      location.href=  'nav.php?id=$uname&op=0';
+  </script>
+  
+  ";
+  exit;
+ }
 
 $imgType=$_FILES["myFile"]["type"];
-
-
 
 $sql = "INSERT INTO `goods` VALUES (NULL ,?, ?,?, ?,?,?);";
 $stmt = mysqli_stmt_init($link); 
@@ -76,19 +100,7 @@ mysqli_stmt_close($stmt);
 echo "
 <script> 
     alert('ADD success !!');
-    location.href=  'nav.php?id=$uname';
+    location.href=  'nav.php?id=$uname&op=0';
 </script>
-";/*
-if($conn->query($sql) === TRUE) {
-    echo "成功";
-} 
-else {
-  //echo "Error: " . $sql . "<br>" . $conn->error;
-    echo "失敗";
-}*/
-//$conn->close();
-
-
-
+";
 ?>
-
