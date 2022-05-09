@@ -7,7 +7,6 @@ $account = $_POST["account"];
 $category = $_POST["category"];
 $latitude=$_POST["latitude"];
 $longitude=$_POST['longitude'];
-
 //欄位空白
 if(($name && $latitude && $longitude && $category) == 0) {
     echo "
@@ -27,8 +26,6 @@ mysqli_stmt_prepare($stmt, $sql);
 mysqli_stmt_bind_param($stmt, 's', $name); 
 mysqli_stmt_execute($stmt); 
 $racc =$stmt->get_result();
-
-
 if(mysqli_num_rows($racc)) {
     echo "
     <script> 
@@ -40,7 +37,6 @@ if(mysqli_num_rows($racc)) {
 }
 if((is_double($latitude + 0) && is_double($longitude + 0)) == 0) {
     echo "
-    
     <script> 
         alert('經緯度要是float !!');
         location.href=  'nav.php?id=$account&op=0';
@@ -50,7 +46,6 @@ if((is_double($latitude + 0) && is_double($longitude + 0)) == 0) {
 }
 if($longitude > 180 || $longitude < -180) {
     echo "
-    
     <script> 
         alert('longitude範圍錯誤 !!');
         location.href=  'nav.php?id=$account&op=0';
@@ -84,10 +79,8 @@ $stmt = mysqli_stmt_init($link);
 mysqli_stmt_prepare($stmt, $sql); 
 mysqli_stmt_bind_param($stmt, 'isidds', $uid, $name, $phonenumber, $longitude, $latitude, $category); 
 mysqli_stmt_execute($stmt); 
-
 $result = $stmt->get_result();
 mysqli_stmt_close($stmt);
-
 echo "
 <script> 
     alert('Register success !!');
