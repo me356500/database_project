@@ -9,9 +9,18 @@ $latitude=$_POST["latitude"];
 $longitude=$_POST['longitude'];
 //欄位空白
 if(($name && $latitude && $longitude && $category) == 0) {
+    $na; $la; $lo; $ca;
+    if(!$name) 
+        $na = 'name';
+    if(!$latitude)
+        $la = 'latitude';
+    if(!$longitude)
+        $lo = 'longitude';
+    if(!$category)
+        $ca = 'category';
     echo "
     <script> 
-        alert('Please fill all the blank!!');
+        alert('Blank : $na $la $lo $ca');
         location.href=  'nav.php?id=$account&op=0';
     </script>
     
@@ -35,10 +44,30 @@ if(mysqli_num_rows($racc)) {
     ";
     exit;
 }
-if((is_double($latitude + 0) && is_double($longitude + 0)) == 0) {
+if(!is_numeric($longitude) && !is_numeric($latitude)){
+    $lo; $la;
+    if(!is_numeric($longitude))
+        $lo = 'longitude';
+    if(!is_numeric($latitude))
+        $la = 'latitude';
     echo "
     <script> 
-        alert('經緯度要是float !!');
+        alert('Wrong format: $lo $la should be number!!');
+        location.href=  'nav.php?id=$account&op=0';
+    </script>
+    ";
+    exit;
+  } 
+
+if(!is_double($longitude + 0) && !is_double($latitude + 0)) {
+    $la; $lo;
+    if(!is_double($longitude + 0))
+        $lo = 'longitude';
+    if(!is_double($latitude + 0))
+        $la = 'latitude';
+    echo "
+    <script> 
+        alert('$lo $la must be float !!');
         location.href=  'nav.php?id=$account&op=0';
     </script>
     ";

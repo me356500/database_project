@@ -4,9 +4,36 @@ header("Content-Type: text/html; charset=utf8");
 include 'config.php';
 $name=$_POST["name"];
 $password=$_POST["password"];
-
+$repassword=$_POST["re-password"];
+$phonenumber=$_POST["phonenumber"];
+$account=$_POST["Account"];
+$latitude=$_POST["latitude"];
+$longitude=$_POST['longitude'];
+if(($name && $password && $phonenumber && $account && $repassword && $latitude && $longitude) == 0) {
+    $n; $pa; $ph; $acc; $rep; $la; $lo;
+    if(!$name)
+        $n = 'name';
+    if(!$password)
+        $pa = 'password';
+    if(!$phonenumber)
+        $ph = 'phonenumber';
+    if(!$account)
+        $acc = 'account';
+    if(!$repassword)
+        $rep = 'repassword';
+    if(!$latitude)
+        $la = 'latitude';
+    if(!$longitude)
+        $lo = 'longitude';
+    echo "
+    <script> 
+        alert('Blank : $n $pa $ph $acc $rep $la $lo');
+        location.href='sign-up.html'
+    </script>
+    ";
+    exit;
+}
 if(!preg_match('/^[0-9a-zA-Z\s]+$/', $password)){
-
     echo "
     <script> 
         alert('password 只能是大小寫英文及數字 !!');
@@ -15,24 +42,18 @@ if(!preg_match('/^[0-9a-zA-Z\s]+$/', $password)){
     ";
     exit;
 }
-
-$password_hash=password_hash($password,PASSWORD_DEFAULT);
-$phonenumber=$_POST["phonenumber"];
-$account=$_POST["Account"];
-$repassword=$_POST["re-password"];
-$repassword_hash = password_hash($repassword,PASSWORD_DEFAULT);
-$latitude=$_POST["latitude"];
-$longitude=$_POST['longitude'];
-//欄位空白
-if(($name && $password && $phonenumber && $account && $repassword && $latitude && $longitude) == 0) {
+if(!preg_match('/^[0-9a-zA-Z\s]+$/', $repassword)){
     echo "
     <script> 
-        alert('Please fill all the blank!!');
+        alert('repassword 只能是大小寫英文及數字 !!');
         location.href='sign-up.html'
     </script>
     ";
     exit;
 }
+$password_hash=password_hash($password,PASSWORD_DEFAULT);
+$repassword_hash = password_hash($repassword,PASSWORD_DEFAULT);
+
 //check account repeated
 $sql = "select * from user where account = ?";
 $stmt = mysqli_stmt_init($link); 
@@ -87,18 +108,37 @@ if(!preg_match('/^[a-zA-Z\s]+$/', $name)){
 if(preg_match("/^09[0-9]{8}$/", $phonenumber) == 0) {
     echo "
     <script> 
-        alert('phonenumber wrong !!');
+        alert('phonenumber format wrong !!');
         location.href='sign-up.html'
     </script>
     ";
     exit;
 }
-if((is_double($latitude + 0) && is_double($longitude + 0)) == 0) {
+if(!is_numeric($longitude) && !is_numeric($latitude)){
+    $lo; $la;
+    if(!is_numeric($longitude))
+        $lo = 'longitude';
+    if(!is_numeric($latitude))
+        $la = 'latitude';
     echo "
-    
     <script> 
-        alert('經緯度要是float !!');
-        location.href='sign-up.html'
+        alert('Wrong format: $lo $la should be number!!');
+        location.href=  'nav.php?id=$account&op=0';
+    </script>
+    ";
+    exit;
+  } 
+
+if(!is_double($longitude + 0) && !is_double($latitude + 0)) {
+    $la; $lo;
+    if(!is_double($longitude + 0))
+        $lo = 'longitude';
+    if(!is_double($latitude + 0))
+        $la = 'latitude';
+    echo "
+    <script> 
+        alert('$lo $la must be float !!');
+        location.href=  'nav.php?id=$account&op=0';
     </script>
     ";
     exit;

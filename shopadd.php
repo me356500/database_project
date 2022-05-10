@@ -2,69 +2,89 @@
 header("Content-Type: text/html; charset=utf8");
 include 'config.php';
 $mealname=$_POST["mealname"];
-$uname = $_POST["uname"];
+$account = $_POST["account"];
 
 $price=$_POST["price"];   
 $quantity=$_POST["quantity"];
-$sql = "select  SID from store where UID = (select UID from user where account = '$uname')"; 
+$sql = "select  SID from store where UID = (select UID from user where account = '$account')"; 
 $data1 = mysqli_query($link, $sql);              
 $rs1 = mysqli_fetch_row($data1); 
-if( empty($_FILES["myFile"]["tmp_name"])){
+$filepath = $_FILES["myFile"]["tmp_name"];
+if(($mealname && $price && $quantity && $filepath) == 0) {
+  $m; $p; $q; $f;
+  if(!$mealname)
+    $m = 'mealname';
+  if(!$price)
+    $p = 'price';
+  if(!$quantity)
+    $q = 'quantity';
+  if(!$filepath)
+    $f = 'file';
   echo "
   <script> 
-      alert('Please fill all the blank!!');
-      location.href=  'nav.php?id=$uname&op=0';
+      alert('Blank : $m $p $q $f');
+      location.href=  'nav.php?id=$account&op=0';
   </script>
-    ";
-    exit;
+  
+  ";
+  
+  exit;
 }
 
-$file = fopen($_FILES["myFile"]["tmp_name"], "rb");
-$fileContents = fread($file, filesize($_FILES["myFile"]["tmp_name"])); 
+$file = fopen($filepath, "rb");
+$fileContents = fread($file, filesize($filepath)); 
   //關閉圖片檔
 fclose($file);
   //讀取出來的圖片資料必須使用base64_encode()函數加以編碼：圖片檔案資料編碼
 $fileContents = base64_encode($fileContents);
-if(($mealname && $price && $quantity && $file) == 0) {
+
+if(!is_numeric($price) && !is_numeric($quantity) ){
+  $p; $q;
+  if(!is_numeric($price))
+    $p = 'price';
+  if(!is_numeric($quantity))
+    $q = 'quantity';
+  echo "
+  <script> 
+      alert('Wrong format: $p $q should be number!!');
+      location.href=  'nav.php?id=$account&op=0';
+  </script>
+  ";
+  exit;
+} 
+  if($price < 0 || $quantity < 0){
+    $p; $q;
+    if($price < 0)
+      $p = 'price';
+    if($quantity < 0)
+      $q = 'quantity';
     echo "
     <script> 
-        alert('Please fill all the blank!!');
-        location.href=  'nav.php?id=$uname&op=0';
-    </script>
-    
-    ";
-    
-    exit;
-}
-  if($quantity < 0|| $price < 0){
-    echo "
-    <script> 
-        alert('Wrong format: Cannot be negative!!');
-        location.href=  'nav.php?id=$uname&op=0';
+        alert('Wrong format: $p $q cannot be negative!!');
+        location.href=  'nav.php?id=$account&op=0';
     </script>
     
     ";
     exit;
   } 
+  
   if(($quantity - floor($quantity + '0') ) > 0 || ($price - floor($price + '0')) > 0 ){
+    $p; $q;
+    if(($price - floor($price + '0')) > 0 )
+      $p = 'price';
+    if(($quantity - floor($quantity + '0') ) > 0)
+      $q = 'quantity';
     echo "
     <script> 
-        alert('Wrong format: Should be integer!!');
-        location.href=  'nav.php?id=$uname&op=0';
+        alert('Wrong format: $p $q should be integer!!');
+        location.href=  'nav.php?id=$account&op=0';
     </script>
     
     ";
     exit;
   } 
-  if(!is_numeric($price) && !is_numeric($quantity)){
-    echo "
-    <script> 
-        alert('Wrong format: Should be positive number!!');
-        location.href=  'nav.php?id=$uname&op=0';
-    </script>
-    ";
-    exit;
-  } 
+ 
+  
 
 
 
@@ -81,7 +101,7 @@ mysqli_stmt_close($stmt);
 echo "
 <script> 
     alert('ADD success !!');
-    location.href=  'nav.php?id=$uname&op=0';
+    location.href=  'nav.php?id=$account&op=0';
 </script>
 ";
 ?>
