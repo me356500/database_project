@@ -533,7 +533,7 @@
             </div>
             <?php
                 $acc = $_GET['id'];
-                echo '<input type="hidden" name="uname" value='.$acc.'>';
+                echo '<input type="hidden" name="account" value='.$acc.'>';
                 ?>
                  
             </form>
