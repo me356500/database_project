@@ -55,6 +55,8 @@
             ?>
             Accouont: 
             <?php
+             echo $id;
+             echo ', Name:';
              $rs=mysqli_fetch_row($data);
              echo $rs[0];
             ?>
