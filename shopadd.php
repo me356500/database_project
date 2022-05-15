@@ -83,7 +83,21 @@ if(!is_numeric($price) && !is_numeric($quantity) ){
     exit;
   } 
  
-  
+$sql = "select * from goods where SID = ? and name =?";
+$stmt = mysqli_stmt_init($link); 
+mysqli_stmt_prepare($stmt, $sql); 
+mysqli_stmt_bind_param($stmt, 'ss', $rs1[0],$mealname); 
+mysqli_stmt_execute($stmt); 
+$racc =$stmt->get_result();
+if(mysqli_num_rows($racc)) {
+    echo "
+    <script> 
+        alert('Goods have been added !!');
+        location.href= 'nav.php?id=$account&op=0&order=0';
+    </script>
+    ";
+    exit;
+} 
 
 
 
