@@ -340,10 +340,10 @@
                   $name = "%".$name."%";
                   $category = "%".$category."%";
                   $meal = "%".$meal."%";
-                  $sql = "select distinct store.SID, store.name, store.foodtype, ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) as distant from store, goods, user where store.name like ? and foodtype like ? and goods.SID = store.SID and goods.price >= ? and goods.price <= ? and goods.name like ? and user.account = ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) >= ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) < ? order by $order";
+                  $sql = "select distinct store.SID, store.name, store.foodtype, ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) as distant from store, goods, user where store.name like ? and foodtype like ? and goods.SID = store.SID and goods.price >= ? and goods.price <= ? and goods.name like ? and user.account = ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) >= ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) < ? order by ?";
                   $stmt = mysqli_stmt_init($link); 
                   mysqli_stmt_prepare($stmt, $sql);
-                  mysqli_stmt_bind_param($stmt, 'ssiissdd', $name, $category, $lowerbound, $upperbound, $meal, $id, $dis_1, $dis_2);
+                  mysqli_stmt_bind_param($stmt, 'ssiissdds', $name, $category, $lowerbound, $upperbound, $meal, $id, $dis_1, $dis_2, $order);
                   mysqli_stmt_execute($stmt); 
                   $data =$stmt->get_result();
                   $i = 1;
