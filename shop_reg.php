@@ -93,6 +93,10 @@ if($latitude > 90 || $latitude < -90 ) {
     exit;
 }
 //可以直接用uname去拉資料庫，account只為大小寫英文
+
+$sql = "update user set identity='manager' where account = '$account' ";
+$data = mysqli_query($link, $sql);
+
 $sql = "select UID from user where account = '$account' ";
 $data = mysqli_query($link, $sql);
 $rs = mysqli_fetch_row($data);

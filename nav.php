@@ -309,6 +309,7 @@
                       $dis_2 = "999999999";
                     }
                     if($order == '0'){
+                      
                       $order = "store.name";
                     }
                     else if($order == '1'){
@@ -337,15 +338,25 @@
                       $order = "distant";
                     }
                   }
-                  $name = "%".$name."%";
-                  $category = "%".$category."%";
-                  $meal = "%".$meal."%";
-                  $sql = "select distinct store.SID, store.name, store.foodtype, ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) as distant from store, goods, user where store.name like ? and foodtype like ? and goods.SID = store.SID and goods.price >= ? and goods.price <= ? and goods.name like ? and user.account = ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) >= ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) < ? order by ?";
-                  $stmt = mysqli_stmt_init($link); 
-                  mysqli_stmt_prepare($stmt, $sql);
-                  mysqli_stmt_bind_param($stmt, 'ssiissdds', $name, $category, $lowerbound, $upperbound, $meal, $id, $dis_1, $dis_2, $order);
-                  mysqli_stmt_execute($stmt); 
-                  $data =$stmt->get_result();
+                  $name = '%'.$name.'%';
+                  $category = '%'.$category.'%';
+                  $meal = '%'.$meal.'%';
+                  if($meal == '%%' && $lowerbound == '0' && $upperbound == '999999'){
+                    $sql = "select distinct store.SID, store.name, store.foodtype, ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) as distant from store, goods, user where store.name like ? and store.foodtype like ? and user.account = ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) >= ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) < ? order by ?";
+                    $stmt = mysqli_stmt_init($link); 
+                    mysqli_stmt_prepare($stmt, $sql);
+                    mysqli_stmt_bind_param($stmt, 'sssdds', $name, $category,$id, $dis_1, $dis_2, $order);
+                    mysqli_stmt_execute($stmt); 
+                    $data =$stmt->get_result();
+                  }
+                  else{
+                    $sql = "select distinct store.SID, store.name, store.foodtype, ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) as distant from store, goods, user where store.name like ? and store.foodtype like ? and goods.SID = store.SID and goods.price >= ? and goods.price <= ? and goods.name like ? and user.account = ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) >= ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) < ? order by ?";
+                    $stmt = mysqli_stmt_init($link); 
+                    mysqli_stmt_prepare($stmt, $sql);
+                    mysqli_stmt_bind_param($stmt, 'ssiissdds', $name, $category, $lowerbound, $upperbound, $meal, $id, $dis_1, $dis_2, $order);
+                    mysqli_stmt_execute($stmt); 
+                    $data =$stmt->get_result();
+                  }
                   $i = 1;
                   while($rs=mysqli_fetch_row($data)) {
                    
@@ -603,63 +614,63 @@
               <tbody>
                 <tr>
                 <?php
-                    $id = $_GET['id'];
-                    echo '<input type="hidden" name="account" value='.$acc.'>';
-                    $sql = "select distinct goods.PID, img, imgtype,goods.name, goods.price, goods.quantity from goods where SID=(select SID from store where UID = (select UID from user where account = '$id'))";
-                    $data = mysqli_query($link, $sql);
-                    $i = 1;
-                    while($rs=mysqli_fetch_row($data)) {
-                      echo '<form action="shop_edit.php"  method="post">';
-                      
-                      echo '<tr>';
-                      echo "<th scope=\"row\">" . $i . "</th>";
-                      echo '<td><img src="data:' . $rs[2] . ';base64,' . $rs[1] . '" /></td>';                     
-                      echo "<td>" . $rs[3] . "</td>";
-                      echo "<td>" . $rs[4] . "</td>";
-                      echo "<td>" . $rs[5] . "</td>";
-                      echo '<input type="hidden" name="mealname" value='.$rs[3].'>';   
-                      echo '<input type="hidden" name="account" value='.$id.'>';                
-                      echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">Edit</button></td>";
-                      echo '<div class="modal fade" id="' . $rs[0] . '"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
-                      echo '<div class="modal-dialog" role="document">';
-                      echo '<div class="modal-content">';
-                      echo '<div class="modal-header">';
-                      echo '<h5 class="modal-title" id="staticBackdropLabel">'. $rs[3] . ' Edit</h5>';
-                      
-                      echo '<button type="button" class="close" data-dismiss="modal" aria-label="Close">';
-                      echo '<span aria-hidden="true">&times;</span>';
-                      echo '</button>';
-                      echo ' </div>';
-                            echo '<div class="modal-body">';
-                                echo '<div class="row" >';
-                                  echo '<div class="col-xs-6">';
-                                    echo '<label for="ex71">price</label>';
-                                    echo '<input class="form-control" id="ex71" type="text" name = "price">';
+                      $id = $_GET['id'];
+                      echo '<input type="hidden" name="account" value='.$acc.'>';
+                      $sql = "select goods.PID, img, imgtype,goods.name, goods.price, goods.quantity from goods where SID=(select SID from store where UID = (select UID from user where account = '$id'))";
+                      $data = mysqli_query($link, $sql);
+                      $i = 1;
+                      while($rs=mysqli_fetch_row($data)) {
+                        echo '<form action="shop_edit.php"  method="post">';
+                        
+                        echo '<tr>';
+                        echo "<th scope=\"row\">" . $i . "</th>";
+                        echo '<td><img src="data:' . $rs[2] . ';base64,' . $rs[1] . '" /></td>';                     
+                        echo "<td>" . $rs[3] . "</td>";
+                        echo "<td>" . $rs[4] . "</td>";
+                        echo "<td>" . $rs[5] . "</td>";
+                        echo '<input type="hidden" name="mealname" value='.$rs[3].'>';   
+                        echo '<input type="hidden" name="account" value='.$id.'>';                
+                        echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">Edit</button></td>";
+                        echo '<div class="modal fade" id="' . $rs[0] . '"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
+                        echo '<div class="modal-dialog" role="document">';
+                        echo '<div class="modal-content">';
+                        echo '<div class="modal-header">';
+                        echo '<h5 class="modal-title" id="staticBackdropLabel">'. $rs[3] . ' Edit</h5>';
+                        
+                        echo '<button type="button" class="close" data-dismiss="modal" aria-label="Close">';
+                        echo '<span aria-hidden="true">&times;</span>';
+                        echo '</button>';
+                        echo ' </div>';
+                              echo '<div class="modal-body">';
+                                  echo '<div class="row" >';
+                                    echo '<div class="col-xs-6">';
+                                      echo '<label for="ex71">price</label>';
+                                      echo '<input class="form-control" id="ex71" type="text" name = "price">';
+                                    echo '</div>';
+                                    echo '<div class="col-xs-6">';
+                                      echo '<label for="ex41">quantity</label>';
+                                      echo '<input class="form-control" id="ex41" type="text" name = "quantity">';
+                                    echo '</div>';
                                   echo '</div>';
-                                  echo '<div class="col-xs-6">';
-                                    echo '<label for="ex41">quantity</label>';
-                                    echo '<input class="form-control" id="ex41" type="text" name = "quantity">';
-                                  echo '</div>';
-                                echo '</div>';
-                            echo '</div>';
-                            echo '<div class="modal-footer">';
-                                echo '<button type = "submit" class="btn btn-secondary" >Edit</button> ';    
+                              echo '</div>';
+                              echo '<div class="modal-footer">';
+                                  echo '<button type = "submit" class="btn btn-secondary" >Edit</button> ';    
+                              echo '</div>';
                             echo '</div>';
                           echo '</div>';
-                        echo '</div>';
-                      echo '</div>';   
-                      echo '</form>';
-                      
-                      echo '<form action="shop_delete.php"  method="post">';
-                      echo '<input type="hidden" name="pid" value='.$rs[0].'>'; 
-                      echo '<input type="hidden" name="account" value='.$id.'>';  
-                      echo "<td>  <button type=\"submit\" class=\"btn btn-danger \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">delete</button></td>";
-                      echo '</form>';
-                      echo '</tr>';
-                       $i++;
-                      
-                      
-                    }
+                        echo '</div>';   
+                        echo '</form>';
+                        
+                        echo '<form action="shop_delete.php"  method="post">';
+                        echo '<input type="hidden" name="pid" value='.$rs[0].'>'; 
+                        echo '<input type="hidden" name="account" value='.$id.'>';  
+                        echo "<td>  <button type=\"submit\" class=\"btn btn-danger \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">delete</button></td>";
+                        echo '</form>';
+                        echo '</tr>';
+                         $i++;
+                        
+                        
+                      }
                     ?>
                   
                   </tr>
