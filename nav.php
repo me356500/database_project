@@ -55,6 +55,8 @@
             ?>
             Accouont: 
             <?php
+             echo $id;
+             echo ', Name:';
              $rs=mysqli_fetch_row($data);
              echo $rs[0];
             ?>
@@ -179,7 +181,7 @@
         <form class="form-horizontal" action="action_page.php" method="POST">
           <?php
               $acc = $_GET['id'];
-              echo '<input type="hidden" name="account" value='.$acc.'>';
+              echo '<input type="hidden" name="uname" value='.$acc.'>';
             ?>  
           <div class="form-group">
               <label class="control-label col-sm-1" for="Shop">Shop</label>
@@ -233,7 +235,6 @@
                 <button type="submit" style="margin-left: 18px;"class="btn btn-primary">Search</button>
               
             </div>
-            
           </form>
           <?php
             $id = $_GET['id'];
@@ -258,8 +259,6 @@
             echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=1">order by category</a><br>';
             echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=2">order by distance</a>';
           ?>
-
-
         </div>
         <div class="row">
           <div class="  col-xs-8">
@@ -338,15 +337,25 @@
                       $order = "distant";
                     }
                   }
-                  $name = "%".$name."%";
-                  $category = "%".$category."%";
-                  $meal = "%".$meal."%";
-                  $sql = "select distinct store.SID, store.name, store.foodtype, ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) as distant from store, goods, user where store.name like ? and foodtype like ? and goods.SID = store.SID and goods.price >= ? and goods.price <= ? and goods.name like ? and user.account = ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) >= ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) < ? order by $order";
-                  $stmt = mysqli_stmt_init($link); 
-                  mysqli_stmt_prepare($stmt, $sql);
-                  mysqli_stmt_bind_param($stmt, 'ssiissdd', $name, $category, $lowerbound, $upperbound, $meal, $id, $dis_1, $dis_2);
-                  mysqli_stmt_execute($stmt); 
-                  $data =$stmt->get_result();
+                  $name = '%'.$name.'%';
+                  $category = '%'.$category.'%';
+                  $meal = '%'.$meal.'%';
+                  if($meal == '%%' && $lowerbound == '0' && $upperbound == '999999'){
+                    $sql = "select distinct store.SID, store.name, store.foodtype, ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) as distant from store, goods, user where store.name like ? and store.foodtype like ? and user.account = ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) >= ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) < ? order by ?";
+                    $stmt = mysqli_stmt_init($link); 
+                    mysqli_stmt_prepare($stmt, $sql);
+                    mysqli_stmt_bind_param($stmt, 'sssdds', $name, $category,$id, $dis_1, $dis_2, $order);
+                    mysqli_stmt_execute($stmt); 
+                    $data =$stmt->get_result();
+                  }
+                  else{
+                    $sql = "select distinct store.SID, store.name, store.foodtype, ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) as distant from store, goods, user where store.name like ? and store.foodtype like ? and goods.SID = store.SID and goods.price >= ? and goods.price <= ? and goods.name like ? and user.account = ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) >= ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) < ? order by ?";
+                    $stmt = mysqli_stmt_init($link); 
+                    mysqli_stmt_prepare($stmt, $sql);
+                    mysqli_stmt_bind_param($stmt, 'ssiissdds', $name, $category, $lowerbound, $upperbound, $meal, $id, $dis_1, $dis_2, $order);
+                    mysqli_stmt_execute($stmt); 
+                    $data =$stmt->get_result();
+                  }
                   $i = 1;
                   while($rs=mysqli_fetch_row($data)) {
                    
@@ -579,7 +588,7 @@
             </div>
             <?php
                 $acc = $_GET['id'];
-                echo '<input type="hidden" name="uname" value='.$acc.'>';
+                echo '<input type="hidden" name="account" value='.$acc.'>';
                 ?>
                  
             </form>
