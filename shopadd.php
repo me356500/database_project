@@ -87,6 +87,24 @@ if(floor($price)!=$price){
   exit;
  }
 
+//check goods repeated
+$sql = "select * from goods where SID = ? and name =?";
+$stmt = mysqli_stmt_init($link); 
+mysqli_stmt_prepare($stmt, $sql); 
+mysqli_stmt_bind_param($stmt, 'ss', $rs1[0],$mealname); 
+mysqli_stmt_execute($stmt); 
+$racc =$stmt->get_result();
+
+
+if(mysqli_num_rows($racc)) {
+    echo "
+    <script> 
+        alert('goods been adds !!');
+        location.href=  'nav.php?id=$account&op=0&order=0';
+    </script>
+    ";
+    exit;
+} 
 $imgType=$_FILES["myFile"]["type"];
 
 $sql = "INSERT INTO `goods` VALUES (NULL ,?, ?,?, ?,?,?);";
