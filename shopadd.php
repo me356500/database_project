@@ -23,14 +23,13 @@ if(($mealname && $price && $quantity && $filepath) == 0) {
   echo "
   <script> 
       alert('Blank : $m $p $q $f');
-      location.href=  'nav.php?id=$account&op=0';
+      location.href=  'nav.php?id=$account&op=0&order=0';
   </script>
   
   ";
   
   exit;
 }
-
 $file = fopen($filepath, "rb");
 $fileContents = fread($file, filesize($filepath)); 
   //關閉圖片檔
@@ -47,7 +46,7 @@ if(!is_numeric($price) && !is_numeric($quantity) ){
   echo "
   <script> 
       alert('Wrong format: $p $q should be number!!');
-      location.href=  'nav.php?id=$account&op=0';
+      location.href=  'nav.php?id=$account&op=0&order=0';
   </script>
   ";
   exit;
@@ -61,7 +60,7 @@ if(!is_numeric($price) && !is_numeric($quantity) ){
     echo "
     <script> 
         alert('Wrong format: $p $q cannot be negative!!');
-        location.href=  'nav.php?id=$account&op=0';
+        location.href=  'nav.php?id=$account&op=0&order=0';
     </script>
     
     ";
@@ -77,7 +76,7 @@ if(!is_numeric($price) && !is_numeric($quantity) ){
     echo "
     <script> 
         alert('Wrong format: $p $q should be integer!!');
-        location.href=  'nav.php?id=$account&op=0';
+        location.href=  'nav.php?id=$account&op=0&order=0';
     </script>
     
     ";
@@ -101,7 +100,7 @@ mysqli_stmt_close($stmt);
 echo "
 <script> 
     alert('ADD success !!');
-    location.href=  'nav.php?id=$account&op=0';
+    location.href=  'nav.php?id=$account&op=0&order=0';
 </script>
 ";
 ?>

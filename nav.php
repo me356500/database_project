@@ -234,6 +234,29 @@
               
             </div>
           </form>
+          <?php
+            $id = $_GET['id'];
+            $op = $_GET['op'];
+            if($op == 1){
+              $lowerbound=$_GET["lowerbound"];
+              $upperbound=$_GET["upperbound"];
+              $category=$_GET["category"];
+              $distance=$_GET["distance"];
+              $meal=$_GET["meal"];
+              $name=$_GET["shopname"];
+            }
+            else{
+              $lowerbound = '0';
+              $upperbound = '999999';
+              $category = '';
+              $meal = '';
+              $name = '';
+              $distance = 'all';
+            }
+            echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=0">order by name</a><br>';
+            echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=1">order by category</a><br>';
+            echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=2">order by distance</a>';
+          ?>
         </div>
         <div class="row">
           <div class="  col-xs-8">
@@ -260,6 +283,7 @@
                     $distance=$_GET["distance"];
                     $meal=$_GET["meal"];
                     $name=$_GET["shopname"];
+                    $order=$_GET['order'];
                     if($lowerbound == ''){
                       $lowerbound = '0';
                     }
@@ -282,6 +306,15 @@
                       $dis_1 = '10000';
                       $dis_2 = "999999999";
                     }
+                    if($order == '0'){
+                      $order = "store.name";
+                    }
+                    else if($order == '1'){
+                      $order = "store.foodtype";
+                    }
+                    else if($order == '2'){
+                      $order = "distant";
+                    }
                   }
                   else{
                     $lowerbound = '0';
@@ -291,11 +324,21 @@
                     $name = '';
                     $dis_1 = '0';
                     $dis_2 = "999999999";
+                    $order = "store.name";
+                    if($order == '0'){
+                      $order = "store.name";
+                    }
+                    else if($order == '1'){
+                      $order = "store.foodtype";
+                    }
+                    else if($order == '2'){
+                      $order = "distant";
+                    }
                   }
                   $name = "%".$name."%";
                   $category = "%".$category."%";
                   $meal = "%".$meal."%";
-                  $sql = "select distinct store.SID, store.name, store.foodtype, ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) as distant from store, goods, user where store.name like ? and foodtype like ? and goods.SID = store.SID and goods.price >= ? and goods.price <= ? and goods.name like ? and user.account = ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) >= ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) < ?";
+                  $sql = "select distinct store.SID, store.name, store.foodtype, ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) as distant from store, goods, user where store.name like ? and foodtype like ? and goods.SID = store.SID and goods.price >= ? and goods.price <= ? and goods.name like ? and user.account = ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) >= ? and ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) < ? order by $order";
                   $stmt = mysqli_stmt_init($link); 
                   mysqli_stmt_prepare($stmt, $sql);
                   mysqli_stmt_bind_param($stmt, 'ssiissdd', $name, $category, $lowerbound, $upperbound, $meal, $id, $dis_1, $dis_2);

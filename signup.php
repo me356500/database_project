@@ -123,7 +123,7 @@ if(!is_numeric($longitude) && !is_numeric($latitude)){
     echo "
     <script> 
         alert('Wrong format: $lo $la should be number!!');
-        location.href=  'nav.php?id=$account&op=0';
+        location.href=  'nav.php?id=$account&op=0&order=0';
     </script>
     ";
     exit;
@@ -138,7 +138,7 @@ if(!is_double($longitude + 0) && !is_double($latitude + 0)) {
     echo "
     <script> 
         alert('$lo $la must be float !!');
-        location.href=  'nav.php?id=$account&op=0';
+        location.href=  'nav.php?id=$account&op=0&order=0';
     </script>
     ";
     exit;

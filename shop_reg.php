@@ -21,7 +21,7 @@ if(($name && $latitude && $longitude && $category) == 0) {
     echo "
     <script> 
         alert('Blank : $na $la $lo $ca');
-        location.href=  'nav.php?id=$account&op=0';
+        location.href=  'nav.php?id=$account&op=0&order=0';
     </script>
     
     ";
@@ -39,7 +39,7 @@ if(mysqli_num_rows($racc)) {
     echo "
     <script> 
         alert('Shop_name has been registered !!');
-        location.href=  'nav.php?id=$account&op=0';
+        location.href=  'nav.php?id=$account&op=0&order=0';
     </script>
     ";
     exit;
@@ -53,7 +53,7 @@ if(!is_numeric($longitude) && !is_numeric($latitude)){
     echo "
     <script> 
         alert('Wrong format: $lo $la should be number!!');
-        location.href=  'nav.php?id=$account&op=0';
+        location.href=  'nav.php?id=$account&op=0&order=0';
     </script>
     ";
     exit;
@@ -68,7 +68,7 @@ if(!is_double($longitude + 0) && !is_double($latitude + 0)) {
     echo "
     <script> 
         alert('$lo $la must be float !!');
-        location.href=  'nav.php?id=$account&op=0';
+        location.href=  'nav.php?id=$account&op=0&order=0';
     </script>
     ";
     exit;
@@ -77,7 +77,7 @@ if($longitude > 180 || $longitude < -180) {
     echo "
     <script> 
         alert('longitude範圍錯誤 !!');
-        location.href=  'nav.php?id=$account&op=0';
+        location.href=  'nav.php?id=$account&op=0&order=0';
     </script>
     ";
     exit;
@@ -87,7 +87,7 @@ if($latitude > 90 || $latitude < -90 ) {
     
     <script> 
         alert('latitude範圍錯誤 !!');
-        location.href=  'nav.php?id=$account&op=0';
+        location.href=  'nav.php?id=$account&op=0&order=0';
     </script>
     ";
     exit;
@@ -113,7 +113,7 @@ mysqli_stmt_close($stmt);
 echo "
 <script> 
     alert('Register success !!');
-    location.href=  'nav.php?id=$account&op=0';
+    location.href=  'nav.php?id=$account&op=0&order=0';
 </script>
 ";
 

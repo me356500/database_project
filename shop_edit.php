@@ -14,7 +14,7 @@ if(( $price && $quantity ) == 0) {
     echo "
     <script> 
         alert('Blank : $p $q');
-        location.href=  'nav.php?id=$account&op=0';
+        location.href=  'nav.php?id=$account&op=0&order=0';
     </script>
     ";
     exit;
@@ -28,7 +28,7 @@ if(( $price && $quantity ) == 0) {
         echo "
         <script> 
             alert('Wrong format: $p $q should be number!!');
-            location.href=  'nav.php?id=$account&op=0';
+            location.href=  'nav.php?id=$account&op=0&order=0';
         </script>
         ";
         exit;
@@ -42,7 +42,7 @@ if(( $price && $quantity ) == 0) {
       echo "
       <script> 
           alert('Wrong format: $p $q cannot be negative!!');
-          location.href=  'nav.php?id=$account&op=0';
+          location.href=  'nav.php?id=$account&op=0&order=0';
       </script>
       
       ";
@@ -57,7 +57,7 @@ if(( $price && $quantity ) == 0) {
         echo "
         <script> 
             alert('Wrong format: $p $q should be integer!!');
-            location.href=  'nav.php?id=$account&op=0';
+            location.href=  'nav.php?id=$account&op=0&order=0';
         </script>
         
         ";
@@ -76,7 +76,7 @@ mysqli_stmt_close($stmt);
 echo "
 <script> 
     alert('Edit success !!');
-    location.href=  'nav.php?id=$account&op=0';
+    location.href=  'nav.php?id=$account&op=0&order=0';
 </script>
 ";
 ?>

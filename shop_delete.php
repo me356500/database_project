@@ -8,7 +8,7 @@ $data1 = mysqli_query($link, $sql);
 echo "
 <script> 
     alert('Delete success !!');
-    location.href=  'nav.php?id=$account&op=0';
+    location.href=  'nav.php?id=$account&op=0&order=0';
 </script>
 ";
 ?>
