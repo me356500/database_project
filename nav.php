@@ -472,7 +472,27 @@
               }
               else if( empty($rs=mysqli_fetch_row($data))){
                 
-                echo "<input class='form-control' id='ex5' type='text' placeholder='macdonald' name = 'shop_name'><br>";
+                echo "<input class='form-control' id='shop_name' type='text' placeholder='macdonald' name = 'shop_name' onkeyup='RegShop()'>";
+                echo "<font color='red'><span id='txtHint'></font></span><br>";
+                echo "
+                <script>
+								function RegShop() {
+									var str = document.getElementById('shop_name').value;
+									if (str.length == 0) { 
+										document.getElementById('txtHint').innerHTML = '';
+										return;
+									} else {
+										var xmlhttp = new XMLHttpRequest();
+										xmlhttp.onreadystatechange = function() {
+											if (this.readyState == 4 && this.status == 200) {
+												document.getElementById('txtHint').innerHTML = this.responseText;
+											}
+										};
+										xmlhttp.open('GET', 'shop_reg_ajax.php?acc=' + str, true);
+										xmlhttp.send();
+									}
+								}
+							  </script>";
               }               
               ?> 
             </div>

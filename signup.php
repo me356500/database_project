@@ -9,6 +9,10 @@ $phonenumber=$_POST["phonenumber"];
 $account=$_POST["Account"];
 $latitude=$_POST["latitude"];
 $longitude=$_POST['longitude'];
+
+
+
+
 if(($name && $password && $phonenumber && $account && $repassword && $latitude && $longitude) == 0) {
     $n; $pa; $ph; $acc; $rep; $la; $lo;
     if(!$name)
