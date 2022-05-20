@@ -31,14 +31,15 @@
     <ul class="nav nav-tabs">
       <li class="active"><a href="#home">Home</a></li>
       <li><a href="#menu1">shop</a></li>
-
-
+      <li><a href="#menu2">My Order</a></li>
+      <li><a href="#menu3">Shop Order</a></li>
+      <li><a href="#menu4">Transaction Record</a></li>
+      <li><a href="index.html">Logout</a></li>
     </ul>
     
     <div class="tab-content">
       <div id="home" class="tab-pane fade in active">
         <h3>Profile</h3>
-        <a href="index.html">Logout</a>
         <div class="row">
           <div class="col-xs-10">
 
@@ -334,7 +335,7 @@
                     }
                     $stmt = mysqli_stmt_init($link); 
                     mysqli_stmt_prepare($stmt, $sql);
-                    mysqli_stmt_bind_param($stmt, 'sssdd', $name, $category,$id, $dis_1, $dis_2);
+                    mysqli_stmt_bind_param($stmt, 'sssdd', $name, $category, $id, $dis_1, $dis_2);
                     mysqli_stmt_execute($stmt); 
                     $data =$stmt->get_result();
                   }
@@ -472,7 +473,27 @@
               }
               else if( empty($rs=mysqli_fetch_row($data))){
                 
-                echo "<input class='form-control' id='ex5' type='text' placeholder='macdonald' name = 'shop_name'><br>";
+                echo "<input class='form-control' id='shop_name' type='text' placeholder='macdonald' name = 'shop_name' onkeyup='RegShop()'>";
+                echo "<font color='red'><span id='txtHint'></font></span><br>";
+                echo "
+                <script>
+								function RegShop() {
+									var str = document.getElementById('shop_name').value;
+									if (str.length == 0) { 
+										document.getElementById('txtHint').innerHTML = '';
+										return;
+									} else {
+										var xmlhttp = new XMLHttpRequest();
+										xmlhttp.onreadystatechange = function() {
+											if (this.readyState == 4 && this.status == 200) {
+												document.getElementById('txtHint').innerHTML = this.responseText;
+											}
+										};
+										xmlhttp.open('GET', 'shop_reg_ajax.php?acc=' + str, true);
+										xmlhttp.send();
+									}
+								}
+							  </script>";
               }               
               ?> 
             </div>
@@ -610,64 +631,63 @@
               <tbody>
                 <tr>
                 <?php
-                    $id = $_GET['id'];
-                    echo '<input type="hidden" name="account" value='.$acc.'>';
-                    $sql = "select goods.PID, img, imgtype,goods.name, goods.price, goods.quantity from goods where goods.SID=(select store.SID from store where store.UID = (select UID from user where account = '$id'))";
-                    $data = mysqli_query($link, $sql);
-                    $i = 1;
-                    while($rs=mysqli_fetch_row($data)) {
-                      echo '<form action="shop_edit.php"  method="post">';
-                      
-                      echo '<tr>';
-                      echo "<th scope=\"row\">" . $i . "</th>";
-                      echo '<td><img src="data:' . $rs[2] . ';base64,' . $rs[1] . '" /></td>';                     
-                      echo "<td>" . $rs[3] . "</td>";
-                      echo "<td>" . $rs[4] . "</td>";
-                      echo "<td>" . $rs[5] . "</td>";
-                      echo '<input type="hidden" name="mealname" value='.$rs[3].'>';   
-                      echo '<input type="hidden" name="account" value='.$id.'>';                
-                      echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">Edit</button></td>";
-                      echo '</form>';
-                      echo '<form action="shop_delete.php"  method="post">';
-                      echo '<input type="hidden" name="pid" value='.$rs[0].'>'; 
-                      echo '<input type="hidden" name="account" value='.$id.'>';  
-                      echo "<td>  <button type=\"submit\" class=\"btn btn-danger \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">delete</button></td>";
-                      echo '</form>';
-                      echo '</tr>';
-                      $i++;
-                    }
-
-                    $sql_2 = 'select PID, goods.name from goods';
-                    $data_2 =  mysqli_query($link, $sql_2);
-                    while($rss=mysqli_fetch_row($data_2)){
-                      echo '<div class="modal fade" id="' . $rss[0] . '"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
-                      echo '<div class="modal-dialog" role="document">';
-                      echo '<div class="modal-content">';
-                      echo '<div class="modal-header">';
-                      echo '<h5 class="modal-title" id="staticBackdropLabel">'.$rss[1]. ' Edit</h5>';
-                      echo '<button type="button" class="close" data-dismiss="modal" aria-label="Close">';
-                      echo '<span aria-hidden="true">&times;</span>';
-                      echo '</button>';
-                      echo ' </div>';
-                            echo '<div class="modal-body">';
-                                echo '<div class="row" >';
-                                  echo '<div class="col-xs-6">';
-                                    echo '<label for="ex71">price</label>';
-                                    echo '<input class="form-control" id="ex71" type="text" name = "price">';
+                      $id = $_GET['id'];
+                      echo '<input type="hidden" name="account" value='.$acc.'>';
+                      $sql = "select goods.PID, img, imgtype,goods.name, goods.price, goods.quantity from goods where SID=(select SID from store where UID = (select UID from user where account = '$id'))";
+                      $data = mysqli_query($link, $sql);
+                      $i = 1;
+                      while($rs=mysqli_fetch_row($data)) {
+                        echo '<form action="shop_edit.php"  method="post">';
+                        
+                        echo '<tr>';
+                        echo "<th scope=\"row\">" . $i . "</th>";
+                        echo '<td><img src="data:' . $rs[2] . ';base64,' . $rs[1] . '" /></td>';                     
+                        echo "<td>" . $rs[3] . "</td>";
+                        echo "<td>" . $rs[4] . "</td>";
+                        echo "<td>" . $rs[5] . "</td>";
+                        echo '<input type="hidden" name="mealname" value='.$rs[3].'>';   
+                        echo '<input type="hidden" name="account" value='.$id.'>';                
+                        echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">Edit</button></td>";
+                        echo '<div class="modal fade" id="' . $rs[0] . '"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
+                        echo '<div class="modal-dialog" role="document">';
+                        echo '<div class="modal-content">';
+                        echo '<div class="modal-header">';
+                        echo '<h5 class="modal-title" id="staticBackdropLabel">'. $rs[3] . ' Edit</h5>';
+                        
+                        echo '<button type="button" class="close" data-dismiss="modal" aria-label="Close">';
+                        echo '<span aria-hidden="true">&times;</span>';
+                        echo '</button>';
+                        echo ' </div>';
+                              echo '<div class="modal-body">';
+                                  echo '<div class="row" >';
+                                    echo '<div class="col-xs-6">';
+                                      echo '<label for="ex71">price</label>';
+                                      echo '<input class="form-control" id="ex71" type="text" name = "price">';
+                                    echo '</div>';
+                                    echo '<div class="col-xs-6">';
+                                      echo '<label for="ex41">quantity</label>';
+                                      echo '<input class="form-control" id="ex41" type="text" name = "quantity">';
+                                    echo '</div>';
                                   echo '</div>';
-                                  echo '<div class="col-xs-6">';
-                                    echo '<label for="ex41">quantity</label>';
-                                    echo '<input class="form-control" id="ex41" type="text" name = "quantity">';
-                                  echo '</div>';
-                                echo '</div>';
-                            echo '</div>';
-                            echo '<div class="modal-footer">';
-                                echo '<button type = "submit" class="btn btn-secondary" >Edit</button> ';    
+                              echo '</div>';
+                              echo '<div class="modal-footer">';
+                                  echo '<button type = "submit" class="btn btn-secondary" >Edit</button> ';    
+                              echo '</div>';
                             echo '</div>';
                           echo '</div>';
-                        echo '</div>';
-                      echo '</div>';   
-                    }
+                        echo '</div>';   
+                        echo '</form>';
+                        
+                        echo '<form action="shop_delete.php"  method="post">';
+                        echo '<input type="hidden" name="pid" value='.$rs[0].'>'; 
+                        echo '<input type="hidden" name="account" value='.$id.'>';  
+                        echo "<td>  <button type=\"submit\" class=\"btn btn-danger \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">delete</button></td>";
+                        echo '</form>';
+                        echo '</tr>';
+                         $i++;
+                        
+                        
+                      }
                     ?>
                   
                   </tr>
@@ -680,6 +700,134 @@
 
       </div>
 
+      <div id="menu2" class="tab-pane fade">
+        <div class="form-group">
+          <label class="control-label col-sm-1" for="status">Status</label>
+            <div class="col-sm-5">
+              <select class="form-control" id="status" name="status">
+                  <option>all</option>
+                  <option>finished</option>
+                  <option>not finished</option>
+                  <option>cancel</option>
+              </select>
+            </div>
+        </div>
+
+        <div class="row">
+          <div class="  col-xs-8">
+            <table class="table" style=" margin-top: 15px;">
+              <thead>
+                <tr>
+                  <th scope="col">Order ID</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Start</th>
+                  <th scope="col">End</th>
+                  <th scope="col">Shop name</th>
+                  <th scope="col">Total Price</th>
+                  <th scope="col">Order Details</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                  <td>test</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="menu3" class="tab-pane fade">
+        <div class="form-group">
+          <label class="control-label col-sm-1" for="status">Status</label>
+            <div class="col-sm-5">
+              <select class="form-control" id="status" name="status">
+                  <option>all</option>
+                  <option>finished</option>
+                  <option>not finished</option>
+                  <option>cancel</option>
+              </select>
+            </div>
+        </div>
+
+        <div class="row">
+          <div class="  col-xs-8">
+            <table class="table" style=" margin-top: 15px;">
+              <thead>
+                <tr>
+                  <th scope="col">Order ID</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Start</th>
+                  <th scope="col">End</th>
+                  <th scope="col">Shop name</th>
+                  <th scope="col">Total Price</th>
+                  <th scope="col">Order Details</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td>test2</td>
+                  <td>test2</td>
+                  <td>test2</td>
+                  <td>test2</td>
+                  <td>test2</td>
+                  <td>test2</td>
+                  <td>test2</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="menu4" class="tab-pane fade">
+        <div class="form-group">
+          <label class="control-label col-sm-1" for="status">Status</label>
+            <div class="col-sm-5">
+              <select class="form-control" id="status" name="status">
+                  <option>all</option>
+                  <option>finished</option>
+                  <option>not finished</option>
+                  <option>cancel</option>
+              </select>
+            </div>
+        </div>
+
+        <div class="row">
+          <div class="  col-xs-8">
+            <table class="table" style=" margin-top: 15px;">
+              <thead>
+                <tr>
+                  <th scope="col">Record ID</th>
+                  <th scope="col">Action</th>
+                  <th scope="col">Time</th>
+                  <th scope="col">Trader</th>
+                  <th scope="col">Amount Change</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td>test2</td>
+                  <td>test2</td>
+                  <td>test2</td>
+                  <td>test2</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
 
     </div>
