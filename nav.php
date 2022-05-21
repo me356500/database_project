@@ -728,18 +728,23 @@
                   <th scope="col">Action</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                  <td>test</td>
-                </tr>
-              </tbody>
+                <?php
+                  echo '<tbody>';
+                  $id = $_GET['id'];
+                  $sql = 'select order_list.SID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and order_list.UID = user.UID and order_list.SID = store.SID';
+                  $data = mysqli_query($link, $sql);
+                  while($rs=mysqli_fetch_row($data)) {
+                    echo '<tr>';
+                    echo '<th scope="row">'.$rs[0].'</th>';
+                    echo '<td>'.$rs[1].'</td>';
+                    echo '<td>'.$rs[2].'</td>';
+                    echo '<td>'.$rs[3].'</td>';
+                    echo '<td>'.$rs[4].'</td>';
+                    echo '<td>'.$rs[5].'</td>';
+                    echo '</tr>';
+                  }
+                  echo '</tbody>';
+                ?>
             </table>
           </div>
         </div>
@@ -773,18 +778,23 @@
                   <th scope="col">Action</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>test2</td>
-                  <td>test2</td>
-                  <td>test2</td>
-                  <td>test2</td>
-                  <td>test2</td>
-                  <td>test2</td>
-                  <td>test2</td>
-                </tr>
-              </tbody>
+                <?php
+                  echo '<tbody>';
+                  $id = $_GET['id'];
+                  $sql = 'select order_list.SID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and store.UID = user.UID and order_list.SID = store.SID';
+                  $data = mysqli_query($link, $sql);
+                  while($rs=mysqli_fetch_row($data)) {
+                    echo '<tr>';
+                    echo '<th scope="row">'.$rs[0].'</th>';
+                    echo '<td>'.$rs[1].'</td>';
+                    echo '<td>'.$rs[2].'</td>';
+                    echo '<td>'.$rs[3].'</td>';
+                    echo '<td>'.$rs[4].'</td>';
+                    echo '<td>'.$rs[5].'</td>';
+                    echo '</tr>';
+                  }
+                  echo '</tbody>';
+                ?>
             </table>
           </div>
         </div>
@@ -796,9 +806,9 @@
             <div class="col-sm-5">
               <select class="form-control" id="status" name="status">
                   <option>all</option>
-                  <option>finished</option>
-                  <option>not finished</option>
-                  <option>cancel</option>
+                  <option>payment</option>
+                  <option>recieve</option>
+                  <option>recharge</option>
               </select>
             </div>
         </div>
@@ -815,15 +825,28 @@
                   <th scope="col">Amount Change</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>test2</td>
-                  <td>test2</td>
-                  <td>test2</td>
-                  <td>test2</td>
-                </tr>
-              </tbody>
+              <?php
+                  echo '<tbody>';
+                  $id = $_GET['id'];
+                  $sql = 'select trade.TID, trade.type, trade.end_time, trade.price from trade, user where trade.UID = user.UID and user.account = "'.$id.'"';
+                  $data = mysqli_query($link, $sql);
+                  while($rs=mysqli_fetch_row($data)) {
+                    echo '<tr>';
+                    echo '<th scope="row">'.$rs[0].'</th>';
+                    echo '<td>'.$rs[1].'</td>';
+                    echo '<td>'.$rs[2].'</td>';
+                    if($rs[1] == 'recharge'){
+                      echo '<td>'.$id.'</td>';
+                    }
+                    else{
+                      //這裡要填入交易的對象(資料庫需要修正)
+                      echo '<td>store.name</td>';
+                    }
+                    echo '<td>'.$rs[3].'</td>';
+                    echo '</tr>';
+                  }
+                  echo '</tbody>';
+                ?>
             </table>
           </div>
         </div>
