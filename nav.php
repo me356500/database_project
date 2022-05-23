@@ -161,12 +161,18 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">Add value</h4>
                   </div>
+                  <form action="user_recharge.php" method="POST">
+                  <?php
+                  $acc = $_GET['id'];
+                  echo '<input type="hidden" name="account" value='.$acc.'>';
+                  ?>
                   <div class="modal-body">
-                    <input type="text" class="form-control" id="Meal" placeholder="enter add value">
+                    <input type="text" class="form-control" id="Meal" placeholder="enter add value" name = "money">
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Add</button>
+                    <button type="submit" class="btn btn-default">Add</button>
                   </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -731,7 +737,7 @@
                 <?php
                   echo '<tbody>';
                   $id = $_GET['id'];
-                  $sql = 'select order_list.SID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and order_list.UID = user.UID and order_list.SID = store.SID';
+                  $sql = 'select order_list.OID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and order_list.UID = user.UID and order_list.SID = store.SID';
                   $data = mysqli_query($link, $sql);
                   while($rs=mysqli_fetch_row($data)) {
                     echo '<tr>';
@@ -741,11 +747,62 @@
                     echo '<td>'.$rs[3].'</td>';
                     echo '<td>'.$rs[4].'</td>';
                     echo '<td>'.$rs[5].'</td>';
+                    echo '<td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#my_order'.$rs[0].'">order details</button></td>';
                     echo '</tr>';
                   }
                   echo '</tbody>';
                 ?>
             </table>
+            <?php
+              $sql_o = "select distinct order_list.OID from order_list";
+              $stmt_o = mysqli_stmt_init($link); 
+              mysqli_stmt_prepare($stmt_o, $sql_o); 
+              mysqli_stmt_execute($stmt_o); 
+              $data_o =$stmt_o->get_result();
+              while($rd=mysqli_fetch_row($data_o)){
+                echo '<div class="modal fade" id="my_order'.$rd[0].'"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
+                  echo '<div class="modal-dialog">';
+                    echo '<div class="modal-content">';
+                      echo '<div class="modal-header">';
+                        echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+                        echo '<h4 class="modal-title">order details</h4>';
+                      echo '</div>';
+                      echo '<div class="modal-body">';
+                        echo '<div class="row">';
+                          echo '<div class="  col-xs-12">';
+                            echo '<table class="table" style=" margin-top: 15px;">';
+                              echo '<thead>';
+                                echo '<tr>';
+                                  echo '<th scope="col">Picture</th>';
+                                  echo '<th scope="col">meal name</th>';
+                                  echo '<th scope="col">price</th>';
+                                  echo '<th scope="col">Order Quantity</th>';
+                                echo '</tr>';
+                              echo '</thead>';
+                              echo '<tbody>';
+                              $sql_in = 'select goods.img, goods.imgtype, goods.name, goods.price, amount.quantity from amount, goods, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID and amount.PID = goods.PID';
+                              $stmt_in = mysqli_stmt_init($link); 
+                              mysqli_stmt_prepare($stmt_in, $sql_in); 
+                              mysqli_stmt_execute($stmt_in); 
+                              $data_in =$stmt_in->get_result();
+                              while($rdd=mysqli_fetch_row($data_in)){
+                                echo '<tr>';
+                                  echo '<td><img src="data:'.$rdd[1].';base64,'.$rdd[0].'" /></td>';
+                                  echo '<td>'.$rdd[2].'</td>';
+                                  echo '<td>'.$rdd[3].'</td>';
+                                  echo '<td>'.$rdd[4].'</td>';
+                                echo '</tr>';
+                              }
+                              echo '</tbody>';
+                            echo '</table>';
+                          echo '</div>';
+                        echo '</div>';
+                      echo '</div>';
+                    echo '</div>';
+                  echo '</div>';
+                echo '</div>';
+              }
+            ?>
           </div>
         </div>
       </div>
@@ -781,7 +838,7 @@
                 <?php
                   echo '<tbody>';
                   $id = $_GET['id'];
-                  $sql = 'select order_list.SID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and store.UID = user.UID and order_list.SID = store.SID';
+                  $sql = 'select order_list.OID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and store.UID = user.UID and order_list.SID = store.SID';
                   $data = mysqli_query($link, $sql);
                   while($rs=mysqli_fetch_row($data)) {
                     echo '<tr>';
@@ -791,11 +848,62 @@
                     echo '<td>'.$rs[3].'</td>';
                     echo '<td>'.$rs[4].'</td>';
                     echo '<td>'.$rs[5].'</td>';
+                    echo '<td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#shop_order'.$rs[0].'">order details</button></td>';
                     echo '</tr>';
                   }
                   echo '</tbody>';
                 ?>
             </table>
+            <?php
+              $sql_o = "select distinct order_list.OID from order_list";
+              $stmt_o = mysqli_stmt_init($link); 
+              mysqli_stmt_prepare($stmt_o, $sql_o); 
+              mysqli_stmt_execute($stmt_o); 
+              $data_o =$stmt_o->get_result();
+              while($rd=mysqli_fetch_row($data_o)){
+                echo '<div class="modal fade" id="shop_order'.$rd[0].'"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
+                  echo '<div class="modal-dialog">';
+                    echo '<div class="modal-content">';
+                      echo '<div class="modal-header">';
+                        echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+                        echo '<h4 class="modal-title">order details</h4>';
+                      echo '</div>';
+                      echo '<div class="modal-body">';
+                        echo '<div class="row">';
+                          echo '<div class="  col-xs-12">';
+                            echo '<table class="table" style=" margin-top: 15px;">';
+                              echo '<thead>';
+                                echo '<tr>';
+                                  echo '<th scope="col">Picture</th>';
+                                  echo '<th scope="col">meal name</th>';
+                                  echo '<th scope="col">price</th>';
+                                  echo '<th scope="col">Order Quantity</th>';
+                                echo '</tr>';
+                              echo '</thead>';
+                              echo '<tbody>';
+                              $sql_in = 'select goods.img, goods.imgtype, goods.name, goods.price, amount.quantity from amount, goods, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID and amount.PID = goods.PID';
+                              $stmt_in = mysqli_stmt_init($link); 
+                              mysqli_stmt_prepare($stmt_in, $sql_in); 
+                              mysqli_stmt_execute($stmt_in); 
+                              $data_in =$stmt_in->get_result();
+                              while($rdd=mysqli_fetch_row($data_in)){
+                                echo '<tr>';
+                                  echo '<td><img src="data:'.$rdd[1].';base64,'.$rdd[0].'" /></td>';
+                                  echo '<td>'.$rdd[2].'</td>';
+                                  echo '<td>'.$rdd[3].'</td>';
+                                  echo '<td>'.$rdd[4].'</td>';
+                                echo '</tr>';
+                              }
+                              echo '</tbody>';
+                            echo '</table>';
+                          echo '</div>';
+                        echo '</div>';
+                      echo '</div>';
+                    echo '</div>';
+                  echo '</div>';
+                echo '</div>';
+              }
+            ?>
           </div>
         </div>
       </div>
@@ -828,7 +936,7 @@
               <?php
                   echo '<tbody>';
                   $id = $_GET['id'];
-                  $sql = 'select trade.TID, trade.type, trade.end_time, trade.price from trade, user where trade.UID = user.UID and user.account = "'.$id.'"';
+                  $sql = 'select trade.TID, trade.type, trade.end_time, trade.price, trade.target from trade, user where trade.UID = user.UID and user.account = "'.$id.'"';
                   $data = mysqli_query($link, $sql);
                   while($rs=mysqli_fetch_row($data)) {
                     echo '<tr>';
@@ -839,8 +947,7 @@
                       echo '<td>'.$id.'</td>';
                     }
                     else{
-                      //這裡要填入交易的對象(資料庫需要修正)
-                      echo '<td>store.name</td>';
+                      echo '<td>'.$rs[4].'</td>';
                     }
                     echo '<td>'.$rs[3].'</td>';
                     echo '</tr>';
