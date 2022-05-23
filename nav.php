@@ -34,7 +34,22 @@
       <li><a href="#menu2">My Order</a></li>
       <li><a href="#menu3">Shop Order</a></li>
       <li><a href="#menu4">Transaction Record</a></li>
-      <li><a href="index.html">Logout</a></li>
+      <script>
+        function deleteAllCookies() {
+        var cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i];
+            var eqPos = cookie.indexOf("=");
+            var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+        }
+        function clearAndRedirect(link) {
+            deleteAllCookies();
+            document.location = link;
+        }
+        </script>
+        <li><a href="javascript:clearAndRedirect('index.html')">Logout</a></li>
     </ul>
     
     <div class="tab-content">
@@ -814,21 +829,44 @@
               <select class="form-control" id="trade_filter" name="trade_filter" onchange="get_filter();">
                   <option value="All">All</option>
                   <option value="Payment">Payment</option>
-                  <option value="Recieve">Recieve</option>
+                  <option value="Receive">Receive</option>
                   <option value="Recharge">Recharge</option>
               </select>
             </div>
         </div>
-        <span id="resultt"></span>          
+              
         <script>
+           
             function get_filter() {
                 var str =  document.getElementById("trade_filter").value;  
-                document.getElementById("resultt").innerHTML =  document.getElementById("trade_filter").value;  
-                document.cookie = "trade_filter="+str;    
-                location.reload();
+                
+                document.cookie = "trade_filter="+str;  
+                 
+                window.location.reload();
+                
             }    
         </script>
-
+        <script>
+                function getCookie(cname) {
+                let name = cname + "=";
+                let decodedCookie = decodeURIComponent(document.cookie);
+                let ca = decodedCookie.split(';');
+                for(let i = 0; i <ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                    }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                    }
+                    }
+                    return "";
+                }
+                let x = getCookie('trade_filter');
+                if(x == "")
+                    x = "All";
+                document.getElementById('trade_filter').value = x;
+              </script>
         <div class="row">
           <div class="  col-xs-8">
             <table class="table" style=" margin-top: 15px;">
@@ -844,70 +882,40 @@
               
               <?php
                 $id = $_GET['id'];
-                $filter = $_COOKIE["trade_filter"];
+                $filter;
+                if(isset($_COOKIE["trade_filter"]))
+                    $filter = $_COOKIE["trade_filter"];
+                else 
+                    $filter = "All";
                 
-                if($filter == "All") {
-                  $sql = 'select trade.TID, trade.type, trade.end_time, trade.price, trade.target from trade, user where trade.UID = user.UID and user.account = "'.$id.'"';
-                  $data = mysqli_query($link, $sql);
-                  while($rs=mysqli_fetch_row($data)) {
-                    echo '<tr>';
-                    echo '<th scope="row">'.$rs[0].'</th>';
-                    echo '<td>'.$rs[1].'</td>';
-                    echo '<td>'.$rs[2].'</td>';
-                    if($rs[1] == 'Recharge'){
-                        echo '<td>'.$id.'</td>';
-                      }
-                      else{
-                        //這裡要填入交易的對象(資料庫需要修正)
-                        echo '<td>store.name</td>';
-                      }
-                    echo '<td>'.$rs[3].'</td>';
-                    echo '</tr>';
-                  }
-                  echo '</tbody>';
-                }
+                
                 if($filter == "Recharge") {
                     $sql = 'select trade.TID, trade.type, trade.end_time, trade.price, trade.target from trade, user where trade.UID = user.UID and user.account = "'.$id.'" and trade.type = "Recharge" ';
-                  $data = mysqli_query($link, $sql);
-                  while($rs=mysqli_fetch_row($data)) {
-                    echo '<tr>';
-                    echo '<th scope="row">'.$rs[0].'</th>';
-                    echo '<td>'.$rs[1].'</td>';
-                    echo '<td>'.$rs[2].'</td>';
-                    echo '<td>'.$id.'</td>';
-                    echo '<td>'.$rs[3].'</td>';
-                    echo '</tr>';
-                  }
-                  echo '</tbody>';
+                
                 }
-                if($filter == "Receive") {
+                else if($filter == "Receive") {
                     $sql = 'select trade.TID, trade.type, trade.end_time, trade.price, trade.target from trade, user where trade.UID = user.UID and user.account = "'.$id.'" and trade.type = "Receive" ';
-                  $data = mysqli_query($link, $sql);
-                  while($rs=mysqli_fetch_row($data)) {
-                    echo '<tr>';
-                    echo '<th scope="row">'.$rs[0].'</th>';
-                    echo '<td>'.$rs[1].'</td>';
-                    echo '<td>'.$rs[2].'</td>';
-                    echo '<td>'.$id.'</td>';
-                    echo '<td>'.$rs[3].'</td>';
-                    echo '</tr>';
-                  }
-                  echo '</tbody>';
+                  
                 }
-                if($filter == "Payment") {
+                else if($filter == "Payment") {
                     $sql = 'select trade.TID, trade.type, trade.end_time, trade.price, trade.target from trade, user where trade.UID = user.UID and user.account = "'.$id.'" and trade.type = "Payment" ';
+                  
+                }
+                else {
+                    $sql = 'select trade.TID, trade.type, trade.end_time, trade.price, trade.target from trade, user where trade.UID = user.UID and user.account = "'.$id.'"';
+                    
+                }
                   $data = mysqli_query($link, $sql);
                   while($rs=mysqli_fetch_row($data)) {
                     echo '<tr>';
                     echo '<th scope="row">'.$rs[0].'</th>';
                     echo '<td>'.$rs[1].'</td>';
                     echo '<td>'.$rs[2].'</td>';
-                    echo '<td>'.$id.'</td>';
+                    echo '<td>'.$rs[4].'</td>';
                     echo '<td>'.$rs[3].'</td>';
                     echo '</tr>';
                   }
                   echo '</tbody>';
-                }
                 ?>
             </table>
           </div>
