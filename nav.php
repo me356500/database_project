@@ -725,15 +725,42 @@
         <div class="form-group">
           <label class="control-label col-sm-1" for="status">Status</label>
             <div class="col-sm-5">
-              <select class="form-control" id="status" name="status">
-                  <option>all</option>
-                  <option>finished</option>
-                  <option>not finished</option>
-                  <option>cancel</option>
+              <select class="form-control" id="order_filter" name="order_filter" onchange="get_order_filter();">
+                  <option value="All">All</option>
+                  <option value="Finished">Finished</option>
+                  <option value="Nfinished">Not finished</option>
+                  <option value="Cancel">Cancel</option>
               </select>
             </div>
         </div>
-
+        <script>
+            function get_order_filter() {
+                var str =  document.getElementById("order_filter").value;  
+                document.cookie = "order_filter="+str;  
+                window.location.reload();
+            }    
+        </script> 
+        <script>
+                function getCookie(cname) {
+                let name = cname + "=";
+                let decodedCookie = decodeURIComponent(document.cookie);
+                let ca = decodedCookie.split(';');
+                for(let i = 0; i <ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                    }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                    }
+                    }
+                    return "";
+                }
+                let x = getCookie('order_filter');
+                if(x == "")
+                    x = "All";
+                document.getElementById('order_filter').value = x;
+              </script>             
         <div class="row">
           <div class="  col-xs-8">
             <table class="table" style=" margin-top: 15px;">
@@ -752,7 +779,19 @@
                 <?php
                   echo '<tbody>';
                   $id = $_GET['id'];
-                  $sql = 'select order_list.SID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and order_list.UID = user.UID and order_list.SID = store.SID';
+                  $filter;
+                  if(isset($_COOKIE["order_filter"]))
+                    $filter = $_COOKIE["order_filter"];
+                  else 
+                    $filter = "All";
+                    if($filter == "All") 
+                        $sql = 'select order_list.SID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and order_list.UID = user.UID and order_list.SID = store.SID';
+                    else if($filter=="Finished")
+                        $sql = 'select order_list.SID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and order_list.UID = user.UID and order_list.SID = store.SID and order_list.state = "Finished" ';
+                    else if($filter=="Nfinished")
+                        $sql = 'select order_list.SID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and order_list.UID = user.UID and order_list.SID = store.SID and order_list.state = "Nfinished" ';
+                    else if($filter=="Cancel")
+                        $sql = 'select order_list.SID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and order_list.UID = user.UID and order_list.SID = store.SID and order_list.state = "Cancel" ';
                   $data = mysqli_query($link, $sql);
                   while($rs=mysqli_fetch_row($data)) {
                     echo '<tr>';
@@ -775,15 +814,28 @@
         <div class="form-group">
           <label class="control-label col-sm-1" for="status">Status</label>
             <div class="col-sm-5">
-              <select class="form-control" id="status" name="status">
-                  <option>all</option>
-                  <option>finished</option>
-                  <option>not finished</option>
-                  <option>cancel</option>
+              <select class="form-control" id="of" name="of" onchange="get_order_f();">
+                  <option value="All">All</option>
+                  <option value="Finished">Finished</option>
+                  <option value="Nfinished">Not finished</option>
+                  <option value="Cancel">Cancel</option>
               </select>
             </div>
         </div>
-
+        <script>
+            function get_order_f() {
+                var str =  document.getElementById("of").value;  
+                document.cookie = "of="+str;  
+                window.location.reload();
+            }    
+        </script> 
+        <script>
+               
+                let y = getCookie('of');
+                if(y == "")
+                    y = "All";
+                document.getElementById('of').value = y;
+              </script>      
         <div class="row">
           <div class="  col-xs-8">
             <table class="table" style=" margin-top: 15px;">
@@ -802,8 +854,21 @@
                 <?php
                   echo '<tbody>';
                   $id = $_GET['id'];
-                  $sql = 'select order_list.SID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and store.UID = user.UID and order_list.SID = store.SID';
-                  $data = mysqli_query($link, $sql);
+                  $filter;
+                  if(isset($_COOKIE["of"]))
+                    $filter = $_COOKIE["of"];
+                  else 
+                    $filter = "All";
+                
+                  if($filter == "All")
+                    $sql = 'select order_list.SID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and store.UID = user.UID and order_list.SID = store.SID';
+                  else if($filter == "Finished")
+                    $sql = 'select order_list.SID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and store.UID = user.UID and order_list.SID = store.SID and order_list.state = "Finished"';
+                  else  if($filter == "Nfinished")
+                    $sql = 'select order_list.SID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and store.UID = user.UID and order_list.SID = store.SID and order_list.state = "Nfinished"';
+                  else   if($filter == "Cancel")
+                    $sql = 'select order_list.SID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and store.UID = user.UID and order_list.SID = store.SID and order_list.state = "Cancel"';
+                    $data = mysqli_query($link, $sql);
                   while($rs=mysqli_fetch_row($data)) {
                     echo '<tr>';
                     echo '<th scope="row">'.$rs[0].'</th>';
@@ -881,6 +946,7 @@
               </thead>
               
               <?php
+                echo '<tbody>';
                 $id = $_GET['id'];
                 $filter;
                 if(isset($_COOKIE["trade_filter"]))
