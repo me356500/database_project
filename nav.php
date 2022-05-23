@@ -31,14 +31,15 @@
     <ul class="nav nav-tabs">
       <li class="active"><a href="#home">Home</a></li>
       <li><a href="#menu1">shop</a></li>
-
-
+      <li><a href="#menu2">My Order</a></li>
+      <li><a href="#menu3">Shop Order</a></li>
+      <li><a href="#menu4">Transaction Record</a></li>
+      <li><a href="index.html">Logout</a></li>
     </ul>
     
     <div class="tab-content">
       <div id="home" class="tab-pane fade in active">
         <h3>Profile</h3>
-        <a href="index.html">Logout</a>
         <div class="row">
           <div class="col-xs-10">
 
@@ -160,12 +161,18 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">Add value</h4>
                   </div>
+                  <form action="user_recharge.php" method="POST">
+                  <?php
+                  $acc = $_GET['id'];
+                  echo '<input type="hidden" name="account" value='.$acc.'>';
+                  ?>
                   <div class="modal-body">
-                    <input type="text" class="form-control" id="Meal" placeholder="enter add value">
+                    <input type="text" class="form-control" id="Meal" placeholder="enter add value" name = "money">
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Add</button>
+                    <button type="submit" class="btn btn-default">Add</button>
                   </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -334,7 +341,7 @@
                     }
                     $stmt = mysqli_stmt_init($link); 
                     mysqli_stmt_prepare($stmt, $sql);
-                    mysqli_stmt_bind_param($stmt, 'sssdd', $name, $category,$id, $dis_1, $dis_2);
+                    mysqli_stmt_bind_param($stmt, 'sssdd', $name, $category, $id, $dis_1, $dis_2);
                     mysqli_stmt_execute($stmt); 
                     $data =$stmt->get_result();
                   }
@@ -699,6 +706,157 @@
 
       </div>
 
+      <div id="menu2" class="tab-pane fade">
+        <div class="form-group">
+          <label class="control-label col-sm-1" for="status">Status</label>
+            <div class="col-sm-5">
+              <select class="form-control" id="status" name="status">
+                  <option>all</option>
+                  <option>finished</option>
+                  <option>not finished</option>
+                  <option>cancel</option>
+              </select>
+            </div>
+        </div>
+
+        <div class="row">
+          <div class="  col-xs-8">
+            <table class="table" style=" margin-top: 15px;">
+              <thead>
+                <tr>
+                  <th scope="col">Order ID</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Start</th>
+                  <th scope="col">End</th>
+                  <th scope="col">Shop name</th>
+                  <th scope="col">Total Price</th>
+                  <th scope="col">Order Details</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+                <?php
+                  echo '<tbody>';
+                  $id = $_GET['id'];
+                  $sql = 'select order_list.SID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and order_list.UID = user.UID and order_list.SID = store.SID';
+                  $data = mysqli_query($link, $sql);
+                  while($rs=mysqli_fetch_row($data)) {
+                    echo '<tr>';
+                    echo '<th scope="row">'.$rs[0].'</th>';
+                    echo '<td>'.$rs[1].'</td>';
+                    echo '<td>'.$rs[2].'</td>';
+                    echo '<td>'.$rs[3].'</td>';
+                    echo '<td>'.$rs[4].'</td>';
+                    echo '<td>'.$rs[5].'</td>';
+                    echo '</tr>';
+                  }
+                  echo '</tbody>';
+                ?>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="menu3" class="tab-pane fade">
+        <div class="form-group">
+          <label class="control-label col-sm-1" for="status">Status</label>
+            <div class="col-sm-5">
+              <select class="form-control" id="status" name="status">
+                  <option>all</option>
+                  <option>finished</option>
+                  <option>not finished</option>
+                  <option>cancel</option>
+              </select>
+            </div>
+        </div>
+
+        <div class="row">
+          <div class="  col-xs-8">
+            <table class="table" style=" margin-top: 15px;">
+              <thead>
+                <tr>
+                  <th scope="col">Order ID</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Start</th>
+                  <th scope="col">End</th>
+                  <th scope="col">Shop name</th>
+                  <th scope="col">Total Price</th>
+                  <th scope="col">Order Details</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+                <?php
+                  echo '<tbody>';
+                  $id = $_GET['id'];
+                  $sql = 'select order_list.SID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and store.UID = user.UID and order_list.SID = store.SID';
+                  $data = mysqli_query($link, $sql);
+                  while($rs=mysqli_fetch_row($data)) {
+                    echo '<tr>';
+                    echo '<th scope="row">'.$rs[0].'</th>';
+                    echo '<td>'.$rs[1].'</td>';
+                    echo '<td>'.$rs[2].'</td>';
+                    echo '<td>'.$rs[3].'</td>';
+                    echo '<td>'.$rs[4].'</td>';
+                    echo '<td>'.$rs[5].'</td>';
+                    echo '</tr>';
+                  }
+                  echo '</tbody>';
+                ?>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="menu4" class="tab-pane fade">
+        <div class="form-group">
+          <label class="control-label col-sm-1" for="status">Status</label>
+            <div class="col-sm-5">
+              <select class="form-control" id="status" name="status">
+                  <option>all</option>
+                  <option>payment</option>
+                  <option>recieve</option>
+                  <option>recharge</option>
+              </select>
+            </div>
+        </div>
+
+        <div class="row">
+          <div class="  col-xs-8">
+            <table class="table" style=" margin-top: 15px;">
+              <thead>
+                <tr>
+                  <th scope="col">Record ID</th>
+                  <th scope="col">Action</th>
+                  <th scope="col">Time</th>
+                  <th scope="col">Trader</th>
+                  <th scope="col">Amount Change</th>
+                </tr>
+              </thead>
+              <?php
+                  echo '<tbody>';
+                  $id = $_GET['id'];
+                  $sql = 'select trade.TID, trade.type, trade.end_time, trade.price from trade, user where trade.UID = user.UID and user.account = "'.$id.'"';
+                  $data = mysqli_query($link, $sql);
+                  while($rs=mysqli_fetch_row($data)) {
+                    echo '<tr>';
+                    echo '<th scope="row">'.$rs[0].'</th>';
+                    echo '<td>'.$rs[1].'</td>';
+                    echo '<td>'.$rs[2].'</td>';
+                    if($rs[1] == 'recharge'){
+                      echo '<td>'.$id.'</td>';
+                    }
+                    else{
+                      //這裡要填入交易的對象(資料庫需要修正)
+                      echo '<td>store.name</td>';
+                    }
+                    echo '<td>'.$rs[3].'</td>';
+                    echo '</tr>';
+                  }
+                  echo '</tbody>';
+                ?>
+            </table>
+          </div>
+        </div>
+      </div>
 
 
     </div>
