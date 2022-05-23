@@ -754,6 +754,7 @@
                 ?>
             </table>
             <?php
+              $id = $_GET['id'];
               $sql_o = "select distinct order_list.OID from order_list";
               $stmt_o = mysqli_stmt_init($link); 
               mysqli_stmt_prepare($stmt_o, $sql_o); 
@@ -785,6 +786,7 @@
                               mysqli_stmt_prepare($stmt_in, $sql_in); 
                               mysqli_stmt_execute($stmt_in); 
                               $data_in =$stmt_in->get_result();
+                              $subtotal = 0;
                               while($rdd=mysqli_fetch_row($data_in)){
                                 echo '<tr>';
                                   echo '<td><img src="data:'.$rdd[1].';base64,'.$rdd[0].'" /></td>';
@@ -792,12 +794,25 @@
                                   echo '<td>'.$rdd[3].'</td>';
                                   echo '<td>'.$rdd[4].'</td>';
                                 echo '</tr>';
+                                $subtotal = $subtotal + $rdd[3] * $rdd[4];
                               }
                               echo '</tbody>';
                             echo '</table>';
-                            echo 'Subtotal:';
-                            echo 'Delivery fee:';
-                            echo 'Total Price:';
+                            echo 'Subtotal: $'.$subtotal.'<br>';
+                            $sql_l = 'select ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) from user, store, order_list where user.account = "'.$id.'" and store.SID = order_list.SID and order_list.UID = user.UID and order_list.OID = '.$rd[0];
+                            $stmt_l = mysqli_stmt_init($link); 
+                            mysqli_stmt_prepare($stmt_l, $sql_l); 
+                            mysqli_stmt_execute($stmt_l); 
+                            $data_l =$stmt_l->get_result();
+                            $delivery=mysqli_fetch_row($data_l);
+                            $t = $delivery[0] / 100;
+                            $fee = round($t);
+                            if($fee < 10){
+                              $fee = 10;
+                            }
+                            echo 'Delivery fee: $'.$fee.'<br>';
+                            $total = $subtotal + $fee;
+                            echo 'Total Price: $'.$total;
                           echo '</div>';
                         echo '</div>';
                       echo '</div>';
@@ -858,6 +873,7 @@
                 ?>
             </table>
             <?php
+              $id = $_GET['id'];
               $sql_o = "select distinct order_list.OID from order_list";
               $stmt_o = mysqli_stmt_init($link); 
               mysqli_stmt_prepare($stmt_o, $sql_o); 
@@ -889,6 +905,7 @@
                               mysqli_stmt_prepare($stmt_in, $sql_in); 
                               mysqli_stmt_execute($stmt_in); 
                               $data_in =$stmt_in->get_result();
+                              $subtotal = 0;
                               while($rdd=mysqli_fetch_row($data_in)){
                                 echo '<tr>';
                                   echo '<td><img src="data:'.$rdd[1].';base64,'.$rdd[0].'" /></td>';
@@ -896,12 +913,31 @@
                                   echo '<td>'.$rdd[3].'</td>';
                                   echo '<td>'.$rdd[4].'</td>';
                                 echo '</tr>';
+                                $subtotal = $subtotal + $rdd[3] * $rdd[4];
                               }
                               echo '</tbody>';
                             echo '</table>';
-                            echo 'Subtotal:';
-                            echo 'Delivery fee:';
-                            echo 'Total Price:';
+                            echo 'Subtotal: $'.$subtotal.'<br>';
+                            $sql_s = 'select store.SID from store, user where user.account = "'.$id.'" and user.UID = store.UID';
+                            $stmt_s = mysqli_stmt_init($link); 
+                            mysqli_stmt_prepare($stmt_s, $sql_s); 
+                            mysqli_stmt_execute($stmt_s); 
+                            $data_s =$stmt_s->get_result();
+                            $sid=mysqli_fetch_row($data_s);
+                            $sql_l = 'select ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) from user, store, order_list where store.SID = '.$sid[0].' and store.SID = order_list.SID and order_list.UID = user.UID and order_list.OID = '.$rd[0];
+                            $stmt_l = mysqli_stmt_init($link); 
+                            mysqli_stmt_prepare($stmt_l, $sql_l); 
+                            mysqli_stmt_execute($stmt_l); 
+                            $data_l =$stmt_l->get_result();
+                            $delivery=mysqli_fetch_row($data_l);
+                            $t = $delivery[0] / 100;
+                            $fee = round($t);
+                            if($fee < 10){
+                              $fee = 10;
+                            }
+                            echo 'Delivery fee: $'.$fee.'<br>';
+                            $total = $subtotal + $fee;
+                            echo 'Total Price: $'.$total;
                           echo '</div>';
                         echo '</div>';
                       echo '</div>';
