@@ -795,6 +795,9 @@
                               }
                               echo '</tbody>';
                             echo '</table>';
+                            echo 'Subtotal:';
+                            echo 'Delivery fee:';
+                            echo 'Total Price:';
                           echo '</div>';
                         echo '</div>';
                       echo '</div>';
@@ -896,6 +899,9 @@
                               }
                               echo '</tbody>';
                             echo '</table>';
+                            echo 'Subtotal:';
+                            echo 'Delivery fee:';
+                            echo 'Total Price:';
                           echo '</div>';
                         echo '</div>';
                       echo '</div>';
