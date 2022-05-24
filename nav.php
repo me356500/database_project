@@ -874,76 +874,78 @@
             </table>
             <?php
               $id = $_GET['id'];
-              $sql_o = "select distinct order_list.OID from order_list";
-              $stmt_o = mysqli_stmt_init($link); 
-              mysqli_stmt_prepare($stmt_o, $sql_o); 
-              mysqli_stmt_execute($stmt_o); 
-              $data_o =$stmt_o->get_result();
-              while($rd=mysqli_fetch_row($data_o)){
-                echo '<div class="modal fade" id="shop_order'.$rd[0].'"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
-                  echo '<div class="modal-dialog">';
-                    echo '<div class="modal-content">';
-                      echo '<div class="modal-header">';
-                        echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
-                        echo '<h4 class="modal-title">order details</h4>';
-                      echo '</div>';
-                      echo '<div class="modal-body">';
-                        echo '<div class="row">';
-                          echo '<div class="  col-xs-12">';
-                            echo '<table class="table" style=" margin-top: 15px;">';
-                              echo '<thead>';
-                                echo '<tr>';
-                                  echo '<th scope="col">Picture</th>';
-                                  echo '<th scope="col">meal name</th>';
-                                  echo '<th scope="col">price</th>';
-                                  echo '<th scope="col">Order Quantity</th>';
-                                echo '</tr>';
-                              echo '</thead>';
-                              echo '<tbody>';
-                              $sql_in = 'select goods.img, goods.imgtype, goods.name, goods.price, amount.quantity from amount, goods, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID and amount.PID = goods.PID';
-                              $stmt_in = mysqli_stmt_init($link); 
-                              mysqli_stmt_prepare($stmt_in, $sql_in); 
-                              mysqli_stmt_execute($stmt_in); 
-                              $data_in =$stmt_in->get_result();
-                              $subtotal = 0;
-                              while($rdd=mysqli_fetch_row($data_in)){
-                                echo '<tr>';
-                                  echo '<td><img src="data:'.$rdd[1].';base64,'.$rdd[0].'" /></td>';
-                                  echo '<td>'.$rdd[2].'</td>';
-                                  echo '<td>'.$rdd[3].'</td>';
-                                  echo '<td>'.$rdd[4].'</td>';
-                                echo '</tr>';
-                                $subtotal = $subtotal + $rdd[3] * $rdd[4];
+              $sql_s = 'select store.SID from store, user where user.account = "'.$id.'" and user.UID = store.UID';
+              $stmt_s = mysqli_stmt_init($link); 
+              mysqli_stmt_prepare($stmt_s, $sql_s); 
+              mysqli_stmt_execute($stmt_s); 
+              $data_s =$stmt_s->get_result();
+              $sid=mysqli_fetch_row($data_s);
+              if($sid){
+                $sql_o = "select distinct order_list.OID from order_list";
+                $stmt_o = mysqli_stmt_init($link); 
+                mysqli_stmt_prepare($stmt_o, $sql_o); 
+                mysqli_stmt_execute($stmt_o); 
+                $data_o =$stmt_o->get_result();
+                while($rd=mysqli_fetch_row($data_o)){
+                  echo '<div class="modal fade" id="shop_order'.$rd[0].'"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
+                    echo '<div class="modal-dialog">';
+                      echo '<div class="modal-content">';
+                        echo '<div class="modal-header">';
+                          echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+                          echo '<h4 class="modal-title">order details</h4>';
+                        echo '</div>';
+                        echo '<div class="modal-body">';
+                          echo '<div class="row">';
+                            echo '<div class="  col-xs-12">';
+                              echo '<table class="table" style=" margin-top: 15px;">';
+                                echo '<thead>';
+                                  echo '<tr>';
+                                    echo '<th scope="col">Picture</th>';
+                                    echo '<th scope="col">meal name</th>';
+                                    echo '<th scope="col">price</th>';
+                                    echo '<th scope="col">Order Quantity</th>';
+                                  echo '</tr>';
+                                echo '</thead>';
+                                echo '<tbody>';
+                                $sql_in = 'select goods.img, goods.imgtype, goods.name, goods.price, amount.quantity from amount, goods, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID and amount.PID = goods.PID';
+                                $stmt_in = mysqli_stmt_init($link); 
+                                mysqli_stmt_prepare($stmt_in, $sql_in); 
+                                mysqli_stmt_execute($stmt_in); 
+                                $data_in =$stmt_in->get_result();
+                                $subtotal = 0;
+                                while($rdd=mysqli_fetch_row($data_in)){
+                                  echo '<tr>';
+                                    echo '<td><img src="data:'.$rdd[1].';base64,'.$rdd[0].'" /></td>';
+                                    echo '<td>'.$rdd[2].'</td>';
+                                    echo '<td>'.$rdd[3].'</td>';
+                                    echo '<td>'.$rdd[4].'</td>';
+                                  echo '</tr>';
+                                  $subtotal = $subtotal + $rdd[3] * $rdd[4];
+                                }
+                                echo '</tbody>';
+                              echo '</table>';
+                              echo 'Subtotal: $'.$subtotal.'<br>';
+                              $sql_l = 'select ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) from user, store, order_list where store.SID = '.$sid[0].' and store.SID = order_list.SID and order_list.UID = user.UID and order_list.OID = '.$rd[0];
+                              $stmt_l = mysqli_stmt_init($link); 
+                              mysqli_stmt_prepare($stmt_l, $sql_l); 
+                              mysqli_stmt_execute($stmt_l); 
+                              $data_l =$stmt_l->get_result();
+                              $delivery=mysqli_fetch_row($data_l);
+                              $t = $delivery[0] / 100;
+                              $fee = round($t);
+                              if($fee < 10){
+                                $fee = 10;
                               }
-                              echo '</tbody>';
-                            echo '</table>';
-                            echo 'Subtotal: $'.$subtotal.'<br>';
-                            $sql_s = 'select store.SID from store, user where user.account = "'.$id.'" and user.UID = store.UID';
-                            $stmt_s = mysqli_stmt_init($link); 
-                            mysqli_stmt_prepare($stmt_s, $sql_s); 
-                            mysqli_stmt_execute($stmt_s); 
-                            $data_s =$stmt_s->get_result();
-                            $sid=mysqli_fetch_row($data_s);
-                            $sql_l = 'select ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) from user, store, order_list where store.SID = '.$sid[0].' and store.SID = order_list.SID and order_list.UID = user.UID and order_list.OID = '.$rd[0];
-                            $stmt_l = mysqli_stmt_init($link); 
-                            mysqli_stmt_prepare($stmt_l, $sql_l); 
-                            mysqli_stmt_execute($stmt_l); 
-                            $data_l =$stmt_l->get_result();
-                            $delivery=mysqli_fetch_row($data_l);
-                            $t = $delivery[0] / 100;
-                            $fee = round($t);
-                            if($fee < 10){
-                              $fee = 10;
-                            }
-                            echo 'Delivery fee: $'.$fee.'<br>';
-                            $total = $subtotal + $fee;
-                            echo 'Total Price: $'.$total;
+                              echo 'Delivery fee: $'.$fee.'<br>';
+                              $total = $subtotal + $fee;
+                              echo 'Total Price: $'.$total;
+                            echo '</div>';
                           echo '</div>';
                         echo '</div>';
                       echo '</div>';
                     echo '</div>';
                   echo '</div>';
-                echo '</div>';
+                }
               }
             ?>
           </div>
