@@ -44,7 +44,7 @@ if(mysqli_num_rows($racc)) {
     ";
     exit;
 }
-if(!is_numeric($longitude) && !is_numeric($latitude)){
+if(!is_numeric($longitude) || !is_numeric($latitude)){
     $lo; $la;
     if(!is_numeric($longitude))
         $lo = 'longitude';
@@ -59,7 +59,7 @@ if(!is_numeric($longitude) && !is_numeric($latitude)){
     exit;
   } 
 
-if(!is_double($longitude + 0) && !is_double($latitude + 0)) {
+if(!is_double($longitude + 0) || !is_double($latitude + 0)) {
     $la; $lo;
     if(!is_double($longitude + 0))
         $lo = 'longitude';

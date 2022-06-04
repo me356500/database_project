@@ -118,7 +118,7 @@ if(preg_match("/^09[0-9]{8}$/", $phonenumber) == 0) {
     ";
     exit;
 }
-if(!is_numeric($longitude) && !is_numeric($latitude)){
+if(!is_numeric($longitude) || !is_numeric($latitude)){
     $lo; $la;
     if(!is_numeric($longitude))
         $lo = 'longitude';
@@ -133,7 +133,7 @@ if(!is_numeric($longitude) && !is_numeric($latitude)){
     exit;
   } 
 
-if(!is_double($longitude + 0) && !is_double($latitude + 0)) {
+if(!is_double($longitude + 0) || !is_double($latitude + 0)) {
     $la; $lo;
     if(!is_double($longitude + 0))
         $lo = 'longitude';
@@ -172,7 +172,7 @@ if($latitude > 90 || $latitude < -90 ) {
 $sql = "INSERT INTO `user` VALUES (NULL ,?, ?,?,'0', ?,?,?, 'user');";
 $stmt = mysqli_stmt_init($link); 
 mysqli_stmt_prepare($stmt, $sql); 
-mysqli_stmt_bind_param($stmt, 'sssidd', $account, $password, $name, $phonenumber, $longitude, $latitude); 
+mysqli_stmt_bind_param($stmt, 'sssidd', $account, $password_hash, $name, $phonenumber, $longitude, $latitude); 
 mysqli_stmt_execute($stmt); 
 
 $result = $stmt->get_result();

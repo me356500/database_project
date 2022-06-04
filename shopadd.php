@@ -37,7 +37,7 @@ fclose($file);
   //讀取出來的圖片資料必須使用base64_encode()函數加以編碼：圖片檔案資料編碼
 $fileContents = base64_encode($fileContents);
 
-if(!is_numeric($price) && !is_numeric($quantity) ){
+if(!is_numeric($price) || !is_numeric($quantity) ){
   $p; $q;
   if(!is_numeric($price))
     $p = 'price';

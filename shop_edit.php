@@ -19,7 +19,7 @@ if(( $price && $quantity ) == 0) {
     ";
     exit;
 }
-    if(!is_numeric($price) && !is_numeric($quantity) ){
+    if(!is_numeric($price) || !is_numeric($quantity) ){
         $p; $q;
         if(!is_numeric($price))
         $p = 'price';

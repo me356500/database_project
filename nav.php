@@ -5,7 +5,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <!-- Bootstrap CSS -->
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,7 +17,14 @@
 </head>
 
 <body>
+  <?php
+  //session_start();
+  //if(!isset($_SESSION['account'])) {
+   // header('Location: index.html');
+    //exit();
+  //}
  
+  ?>
   <nav class="navbar navbar-inverse">
     <div class="container-fluid">
       <div class="navbar-header">
@@ -38,6 +45,7 @@
         function deleteAllCookies() {
         var cookies = document.cookie.split(";");
         for (var i = 0; i < cookies.length; i++) {
+            
             var cookie = cookies[i];
             var eqPos = cookie.indexOf("=");
             var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
@@ -46,6 +54,9 @@
         }
         function clearAndRedirect(link) {
             deleteAllCookies();
+            <?php 
+            
+            session_unset(); ?>
             document.location = link;
         }
         </script>
@@ -445,13 +456,36 @@
     $j = 1;
     
     while($rss=mysqli_fetch_row($data_2)){
+      echo "
+        <script>
+          var token='<?php echo $rss[0];?>';
+         
+          function insc(temp) {
+              alert(temp);
+              var count = document.getElenmentById(temp).innerHTML;
+              document.getElementById(temp).innerHTML=parseInt(temp)+1;
+          }
+          function dec(temp) {
+            var count = document.getElenmentById(temp).innerHTML;
+            if(parseInt(temp) > 0){
+              document.getElementById(temp).innerHTML=parseInt(temp)-1;
+            };
+          }
+        </script>";
       echo '<tr>';
       echo "<th scope=\"row\">" . $j . "</th>";
       echo '<td><img src="data:' . $rss[4] . ';base64,' . $rss[3] . '" /></td>';
       echo "<td>" . $rss[0] . "</td>";
       echo "<td>" . $rss[1] . "</td>";
       echo "<td>" . $rss[2] . "</td>";
-      echo "<td> <input type=\"checkbox\" id=" . $rss[0] . " value=" . $rss[0] . "></td>";
+      //echo "<td> <input type=\"checkbox\" id=" . $rss[0] . " value=" . $rss[0] . "></td>";
+      echo "<td>";
+      //echo "<button type=\"button\" class=\"btn btn-primary btn-sm\" onclick=\"insc()\"></button>";
+      //echo "<button type=\"button\" class=\"btn-sm\" id=" . $rss[0] . "  value=\"0\">0</button>";
+      //echo "<button type=\"button\" class=\"btn btn-primary btn-sm\" onclick=\"dec()\">-</button>";
+      echo "<input type=\"number\" id=" . $rss[0] . " min=\"0\" step=\"1\" value=\"0\">";
+      echo "</td>";
+      
       $j++;
     }
     echo '</tbody>';
@@ -460,7 +494,7 @@
     echo '</div>';
     echo '</div>';
     echo '<div class="modal-footer">';
-    echo '<button type="button" class="btn btn-default" data-dismiss="modal">Order</button>';
+    echo '<button type="button" class="btn btn-default" data-dismiss="modal">Calculate Price</button>';
     echo '</div>';
     echo '</div>';
     echo '</div>';
@@ -896,6 +930,8 @@
             function get_order_f() {
                 var str =  document.getElementById("of").value;  
                 document.cookie = "of="+str;  
+                
+                
                 window.location.reload();
             }    
         </script> 
@@ -919,6 +955,7 @@
                   <th scope="col">Total Price</th>
                   <th scope="col">Order Details</th>
                   <th scope="col">Action</th>
+                  <th scope="col"></th>
                 </tr>
               </thead>
                 <?php
@@ -948,11 +985,36 @@
                     echo '<td>'.$rs[4].'</td>';
                     echo '<td>'.$rs[5].'</td>';
                     echo '<td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#shop_order'.$rs[0].'">order details</button></td>';
+                    if($rs[1] == "Nfinished") {
+                      $id = $_GET['id'];
+                      echo '<form action="order_finish.php"  method="post">';
+                      echo '<input type="hidden" name="oid" value='.$rs[0].'>'; 
+                      echo '<input type="hidden" name="account" value='.$id.'>';  
+                      echo '<td><button type="submit" class="btn btn-success" data-toggle="modal"">Done</button></td>';
+                      echo '</form>';
+                      echo '<td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#shop_order'.$rs[0].'">Cancel</button></td>';
+                    }
                     echo '</tr>';
                   }
                   echo '</tbody>';
                 ?>
             </table>
+            <?php
+               $id = $_GET['id'];
+               $sql_s = 'select store.SID from store, user where user.account = "'.$id.'" and user.UID = store.UID';
+               $stmt_s = mysqli_stmt_init($link); 
+               mysqli_stmt_prepare($stmt_s, $sql_s); 
+               mysqli_stmt_execute($stmt_s); 
+               $data_s =$stmt_s->get_result();
+               $sid=mysqli_fetch_row($data_s);
+               if($sid) {
+                $sql_o = "select distinct order_list.OID from order_list";
+                $stmt_o = mysqli_stmt_init($link); 
+                mysqli_stmt_prepare($stmt_o, $sql_o); 
+                mysqli_stmt_execute($stmt_o); 
+                $data_o =$stmt_o->get_result();
+               }
+            ?>
             <?php
               $id = $_GET['id'];
               $sql_s = 'select store.SID from store, user where user.account = "'.$id.'" and user.UID = store.UID';
