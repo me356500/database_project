@@ -214,7 +214,9 @@
         <form class="form-horizontal" action="action_page.php" method="POST">
           <?php
               $acc = $_GET['id'];
+              $odr = $_GET["order"];
               echo '<input type="hidden" name="uname" value='.$acc.'>';
+              echo '<input type="hidden" name="order" value='.$odr.'>';
             ?>  
           <div class="form-group">
               <label class="control-label col-sm-1" for="Shop">Shop</label>
@@ -837,6 +839,14 @@
                     echo '<td>'.$rs[5].'</td>';
                     
                     echo '<td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#my_order'.$rs[0].'">order details</button></td>';
+                    if($rs[1] == "Nfinished") {
+                      echo '<form action="order_delete.php"  method="post">';
+                      echo '<input type="hidden" name="oid" value='.$rs[0].'>'; 
+                      echo '<input type="hidden" name="account" value='.$id.'>';
+                      echo '<input type="hidden" name="price" value='.$rs[5].'>';
+                      echo '<td><button type="submit" class="btn btn-danger" data-toggle="modal" ">Cancel</button></td>';
+                      echo '</form>';
+                    }
                     echo '</tr>';
                   }
                   echo '</tbody>';
@@ -992,7 +1002,12 @@
                       echo '<input type="hidden" name="account" value='.$id.'>';  
                       echo '<td><button type="submit" class="btn btn-success" data-toggle="modal"">Done</button></td>';
                       echo '</form>';
-                      echo '<td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#shop_order'.$rs[0].'">Cancel</button></td>';
+                      echo '<form action="order_delete.php"  method="post">';
+                      echo '<input type="hidden" name="oid" value='.$rs[0].'>'; 
+                      echo '<input type="hidden" name="account" value='.$id.'>';
+                      echo '<input type="hidden" name="price" value='.$rs[5].'>';
+                      echo '<td><button type="submit" class="btn btn-danger" data-toggle="modal" ">Cancel</button></td>';
+                      echo '</form>';
                     }
                     echo '</tr>';
                   }
@@ -1100,7 +1115,7 @@
         <div class="form-group">
           <label class="control-label col-sm-1" for="status">Status</label>
             <div class="col-sm-5">
-              <select class="form-control" id="trade_filter" name="trade_filter" onchange="get_filter();">
+              <select class="form-control" id="trade_filter" name="trade_filter" onchange="get_trade_filter();">
                   <option value="All">All</option>
                   <option value="Payment">Payment</option>
                   <option value="Receive">Receive</option>
@@ -1111,7 +1126,7 @@
               
         <script>
            
-            function get_filter() {
+            function get_trade_filter() {
                 var str =  document.getElementById("trade_filter").value;  
                 
                 document.cookie = "trade_filter="+str;  
@@ -1136,6 +1151,7 @@
                     }
                     return "";
                 }
+
                 let x = getCookie('trade_filter');
                 if(x == "")
                     x = "All";
