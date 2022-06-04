@@ -15,6 +15,14 @@ mysqli_stmt_execute($stmt);
 $result = $stmt->get_result();
 mysqli_stmt_close($stmt);
 
+$sql = "update user,order_list,store set user.balance = user.balance - ? where store.SID=order_list.SID and store.UID=user.UID";
+$stmt = mysqli_stmt_init($link); 
+mysqli_stmt_prepare($stmt, $sql); 
+mysqli_stmt_bind_param($stmt, 'i',$price ); 
+mysqli_stmt_execute($stmt); 
+$result = $stmt->get_result();
+mysqli_stmt_close($stmt);
+
 
 echo "
 <script> 
