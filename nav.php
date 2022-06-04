@@ -1123,40 +1123,21 @@
               </select>
             </div>
         </div>
-              
+        <script>
+          let tx = getCookie('trade_filter');
+          if(tx == "")
+            tx = "All";
+          document.getElementById('trade_filter').value = tx;
+        </script>      
         <script>
            
             function get_trade_filter() {
                 var str =  document.getElementById("trade_filter").value;  
-                
                 document.cookie = "trade_filter="+str;  
-                 
                 window.location.reload();
-                
             }    
         </script>
-        <script>
-                function getCookie(cname) {
-                let name = cname + "=";
-                let decodedCookie = decodeURIComponent(document.cookie);
-                let ca = decodedCookie.split(';');
-                for(let i = 0; i <ca.length; i++) {
-                    let c = ca[i];
-                    while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                    }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
-                    }
-                    }
-                    return "";
-                }
-
-                let x = getCookie('trade_filter');
-                if(x == "")
-                    x = "All";
-                document.getElementById('trade_filter').value = x;
-              </script>
+        
         <div class="row">
           <div class="  col-xs-8">
             <table class="table" style=" margin-top: 15px;">
@@ -1192,7 +1173,7 @@
                     $sql = 'select trade.TID, trade.type, trade.end_time, trade.price, trade.target from trade, user where trade.UID = user.UID and user.account = "'.$id.'" and trade.type = "Payment" ';
                   
                 }
-                else {
+                else if($filter == "All"){
                     $sql = 'select trade.TID, trade.type, trade.end_time, trade.price, trade.target from trade, user where trade.UID = user.UID and user.account = "'.$id.'"';
                     
                 }
