@@ -6,6 +6,10 @@ $shopname = $_POST["shopname"];
 $price = $_POST["price"];   
 $quantity = $_POST["quantity"];
 $account = $_POST["account"];
+$goodid = $_POST["goodid"];
+
+
+
 if(( $price && $quantity ) == 0) {
     $p; $q;
     if(!$price) 
@@ -67,10 +71,10 @@ if(( $price && $quantity ) == 0) {
      
   
 
-$sql = "update goods set price = ?, quantity= ? where name=? and SID=$shopname ";
+$sql = "update goods set price = ?, quantity= ? where PID=? and SID=$shopname ";
 $stmt = mysqli_stmt_init($link); 
 mysqli_stmt_prepare($stmt, $sql); 
-mysqli_stmt_bind_param($stmt, 'iis',$price,$quantity,$mealname  ); 
+mysqli_stmt_bind_param($stmt, 'iii',$price,$quantity,$goodid  ); 
 mysqli_stmt_execute($stmt); 
 $result = $stmt->get_result();
 mysqli_stmt_close($stmt);
