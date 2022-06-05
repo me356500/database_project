@@ -704,7 +704,8 @@
                         echo "<td>" . $rs[5] . "</td>";
                         echo '<input type="hidden" name="mealname" value='.$rs[3].'>';   
                         echo '<input type="hidden" name="account" value='.$id.'>';  
-                        echo '<input type="hidden" name="shopname" value='.$rs[6].'>';              
+                        echo '<input type="hidden" name="shopname" value='.$rs[6].'>';   
+                        echo '<input type="hidden" name="goodid" value='.$rs[0].'>';            
                         echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">Edit</button></td>";
                         echo '<div class="modal fade" id="' . $rs[0] . '"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
                         echo '<div class="modal-dialog" role="document">';
