@@ -6,7 +6,8 @@ include 'config.php';
 $account = $_POST["account"];
 $latitude=$_POST["latitude"];
 $longitude=$_POST['longitude'];
-
+session_start();
+$_SESSION['account'] = ".$account.";
 //欄位空白
 if(($latitude && $longitude ) == 0) {
     $la; $lo;

@@ -14,8 +14,8 @@ $result = $stmt->get_result();
 if($rs = mysqli_fetch_row($result)){
     
     if (password_verify($password, $rs[0])) {
-        //session_start();
-        //$_SESSION['account'] = $account;
+        session_start();
+        $_SESSION['account'] = $account;
         header("Location:nav.php?id=".$account."&op=0&order=0");
         exit;
     } else {

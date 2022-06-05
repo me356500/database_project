@@ -5,6 +5,9 @@ include 'config.php';
 date_default_timezone_set('Asia/Taipei');
 $account = $_POST["account"];
 $money=$_POST["money"];
+session_start();
+$_SESSION['account'] = ".$account.";
+
 if(($money) == 0) {
     echo "
     <script> 

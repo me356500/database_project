@@ -1,14 +1,18 @@
 <?php 
 header("Content-Type: text/html; charset=utf8");
 include 'config.php';
+session_start();
 $mealname=$_POST["mealname"];
 $account = $_POST["account"];
-
 $price=$_POST["price"];   
 $quantity=$_POST["quantity"];
 $sql = "select  SID from store where UID = (select UID from user where account = '$account')"; 
-$data1 = mysqli_query($link, $sql);              
+$data1 = mysqli_query($link, $sql);          
+
 $rs1 = mysqli_fetch_row($data1); 
+$_SESSION['account'] = ".$account.";
+
+
 $filepath = $_FILES["myFile"]["tmp_name"];
 if(($mealname && $price && $quantity && $filepath) == 0) {
   $m; $p; $q; $f;

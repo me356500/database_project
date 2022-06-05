@@ -41,6 +41,8 @@ try {
     throw $e; // but the error must be handled anyway
 }
 
+session_start();
+$_SESSION['account'] = ".$account.";
 
 echo "
 <script> 

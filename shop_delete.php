@@ -5,6 +5,10 @@ $pid=$_POST["pid"];
 $account = $_POST["account"];
 $sql = "delete from goods where pid ='$pid'";
 $data1 = mysqli_query($link, $sql);
+
+session_start();
+$_SESSION['account'] = ".$account.";
+
 echo "
 <script> 
     alert('Delete success !!');

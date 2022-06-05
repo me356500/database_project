@@ -7,6 +7,10 @@ $account = $_POST["account"];
 $category = $_POST["category"];
 $latitude=$_POST["latitude"];
 $longitude=$_POST['longitude'];
+
+session_start();
+$_SESSION['account'] = ".$account.";
+
 //欄位空白
 if(($name && $latitude && $longitude && $category) == 0) {
     $na; $la; $lo; $ca;

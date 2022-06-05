@@ -18,11 +18,12 @@
 
 <body>
   <?php
-  //session_start();
-  //if(!isset($_SESSION['account'])) {
-   // header('Location: index.html');
-    //exit();
-  //}
+
+  session_start();
+  if(!isset($_SESSION['account'])) {
+    header('Location: index.html');
+    exit();
+  }
  
   ?>
   <nav class="navbar navbar-inverse">
@@ -502,6 +503,7 @@
     echo '</div>';
     echo '</div>';
   }
+ 
 ?>
 
                 <!-- Modal -->
@@ -756,7 +758,7 @@
 
 
       </div>
-
+    
       <div id="menu2" class="tab-pane fade">
         <div class="form-group">
           <label class="control-label col-sm-1" for="status">Status</label>
@@ -769,11 +771,18 @@
               </select>
             </div>
         </div>
+        
         <script>
             function get_order_filter() {
+                
                 var str =  document.getElementById("order_filter").value;  
-                document.cookie = "order_filter="+str;  
-                window.location.reload();
+                document.cookie = "order_filter="+str; 
+                var id = <?php echo(json_encode($_GET['id'])); ?> ;
+                var op = <?php echo(json_encode($_GET['op'])); ?> ;
+                var odr = <?php echo(json_encode($_GET['order'])); ?> ;
+                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr;
+                location.href=dst;
+               
             }    
         </script> 
         <script>
@@ -938,11 +947,14 @@
         </div>
         <script>
             function get_order_f() {
-                var str =  document.getElementById("of").value;  
-                document.cookie = "of="+str;  
-                
-                
-                window.location.reload();
+              var str =  document.getElementById("of").value;  
+              document.cookie = "of="+str;  
+              var id = <?php echo(json_encode($_GET['id'])); ?> ;
+                var op = <?php echo(json_encode($_GET['op'])); ?> ;
+                var odr = <?php echo(json_encode($_GET['order'])); ?> ;
+                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr;
+                location.href=dst;
+
             }    
         </script> 
         <script>
@@ -1130,11 +1142,16 @@
           document.getElementById('trade_filter').value = tx;
         </script>      
         <script>
-           
+          
             function get_trade_filter() {
+              
                 var str =  document.getElementById("trade_filter").value;  
                 document.cookie = "trade_filter="+str;  
-                window.location.reload();
+                var id = <?php echo(json_encode($_GET['id'])); ?> ;
+                var op = <?php echo(json_encode($_GET['op'])); ?> ;
+                var odr = <?php echo(json_encode($_GET['order'])); ?> ;
+                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr;
+                location.href=dst;
             }    
         </script>
         

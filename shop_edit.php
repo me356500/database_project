@@ -5,6 +5,10 @@ $mealname = $_POST["mealname"];
 $price = $_POST["price"];   
 $quantity = $_POST["quantity"];
 $account = $_POST["account"];
+
+session_start();
+$_SESSION['account'] = ".$account.";
+
 if(( $price && $quantity ) == 0) {
     $p; $q;
     if(!$price) 
@@ -73,6 +77,8 @@ mysqli_stmt_bind_param($stmt, 'iis',$price,$quantity,$mealname  );
 mysqli_stmt_execute($stmt); 
 $result = $stmt->get_result();
 mysqli_stmt_close($stmt);
+
+
 echo "
 <script> 
     alert('Edit success !!');
