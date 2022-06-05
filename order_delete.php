@@ -20,19 +20,23 @@ $sql = "select uid from store where sid =(select sid from order_list where oid='
 $data = mysqli_query($link, $sql);
 $uid_shop=mysqli_fetch_row($data);
 
+$sql = "select name from store where sid =(select sid from order_list where oid='$oid')";
+$data = mysqli_query($link, $sql);
+$shop_name=mysqli_fetch_row($data);
+
 $link->begin_transaction();
 
 try {
     $sql = "UPDATE user SET balance=balance+'$price' where account = '$account'";
     $data1 = mysqli_query($link, $sql);
 
-    $sql = "UPDATE user SET balance=balance+'$price' where uid = '$uid_shop[0]'";
+    $sql = "UPDATE user SET balance=balance-'$price' where uid = '$uid_shop[0]'";
     $data1 = mysqli_query($link, $sql);
 
-    $sql = "INSERT INTO trade VALUES(\"$uid[0]\",NULL,'$price',\"Receive\",\"$n_time\",\"$uid_shop[0]\")";
+    $sql = "INSERT INTO trade VALUES(\"$uid[0]\",NULL,'$price',\"Receive\",\"$n_time\",\"$shop_name[0]\")";
     $data1 = mysqli_query($link, $sql);
 
-    $sql = "INSERT INTO trade VALUES(\"$uid_shop[0]\",NULL,'$price',\"Payment\",\"$n_time\",\"$uid[0]\")";
+    $sql = "INSERT INTO trade VALUES(\"$uid_shop[0]\",NULL,'$price',\"Payment\",\"$n_time\",\"$account\")";
     $data1 = mysqli_query($link, $sql);
    
 
