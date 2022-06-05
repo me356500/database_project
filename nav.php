@@ -405,7 +405,7 @@
                     else{
                       echo "<td>medium</td>";
                     }
-                    echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">Open menu</button></td>";
+                    echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#open_menu" . $rs[0] . "\">Open menu</button></td>";
                     echo '</tr>';
                     $i++;
                   }
@@ -429,7 +429,7 @@
   $data =$stmt->get_result();
   while($rs=mysqli_fetch_row($data)){
     
-    echo '<div class="modal fade" id="' . $rs[0] . '"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
+    echo '<div class="modal fade" id="open_menu' . $rs[0] . '"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
     echo '<div class="modal-dialog">';
     echo '<div class="modal-content">';
     echo '<div class="modal-header">';
@@ -486,11 +486,18 @@
       //echo "<button type=\"button\" class=\"btn btn-primary btn-sm\" onclick=\"insc()\"></button>";
       //echo "<button type=\"button\" class=\"btn-sm\" id=" . $rss[0] . "  value=\"0\">0</button>";
       //echo "<button type=\"button\" class=\"btn btn-primary btn-sm\" onclick=\"dec()\">-</button>";
-      echo "<input type=\"number\" id=" . $rss[0] . " min=\"0\" step=\"1\" value=\"0\">";
+   
+      echo "<input type=\"number\" id=" . $rss[0] . " min=\"0\" step=\"1\" value=\"0\" onchange=\"test(this.value,".$rss[5].")\">";
       echo "</td>";
       
       $j++;
     }
+    echo "<script>
+      function test(val, id) {
+        var str = 'pid'+id+'='+val;
+        document.cookie = str;
+      }
+    </script>";
     echo '</tbody>';
     echo '</table>';
     echo '</div>';
@@ -692,11 +699,11 @@
                 <?php
                       $id = $_GET['id'];
                       echo '<input type="hidden" name="account" value='.$acc.'>';
-                      $sql = "select goods.PID, img, imgtype,goods.name, goods.price, goods.quantity from goods where SID=(select SID from store where UID = (select UID from user where account = '$id'))";
+                      $sql = "select goods.PID, img, imgtype,goods.name, goods.price, goods.quantity,goods.SID from goods where SID=(select SID from store where UID = (select UID from user where account = '$id'))";
                       $data = mysqli_query($link, $sql);
                       $i = 1;
                       while($rs=mysqli_fetch_row($data)) {
-                        echo '<form action="shop_edit.php"  method="post">';
+                        
                         
                         echo '<tr>';
                         echo "<th scope=\"row\">" . $i . "</th>";
@@ -704,10 +711,9 @@
                         echo "<td>" . $rs[3] . "</td>";
                         echo "<td>" . $rs[4] . "</td>";
                         echo "<td>" . $rs[5] . "</td>";
-                        echo '<input type="hidden" name="mealname" value='.$rs[3].'>';   
-                        echo '<input type="hidden" name="account" value='.$id.'>';                
-                        echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">Edit</button></td>";
-                        echo '<div class="modal fade" id="' . $rs[0] . '"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
+                                  
+                        echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#edit" . $rs[0] . "\">Edit</button></td>";
+                        echo '<div class="modal fade" id="edit' . $rs[0] . '"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
                         echo '<div class="modal-dialog" role="document">';
                         echo '<div class="modal-content">';
                         echo '<div class="modal-header">';
@@ -717,6 +723,10 @@
                         echo '<span aria-hidden="true">&times;</span>';
                         echo '</button>';
                         echo ' </div>';
+                        echo '<form action="shop_edit.php"  method="post">';
+ 
+                        echo '<input type="hidden" name="account" value='.$id.'>';  
+                        echo '<input type="hidden" name="pid" value='.$rs[0].'>';    
                               echo '<div class="modal-body">';
                                   echo '<div class="row" >';
                                     echo '<div class="col-xs-6">';
@@ -731,16 +741,18 @@
                               echo '</div>';
                               echo '<div class="modal-footer">';
                                   echo '<button type = "submit" class="btn btn-secondary" >Edit</button> ';    
+
                               echo '</div>';
+                              echo '</form>';
                             echo '</div>';
                           echo '</div>';
                         echo '</div>';   
-                        echo '</form>';
+                        
                         
                         echo '<form action="shop_delete.php"  method="post">';
                         echo '<input type="hidden" name="pid" value='.$rs[0].'>'; 
                         echo '<input type="hidden" name="account" value='.$id.'>';  
-                        echo "<td>  <button type=\"submit\" class=\"btn btn-danger \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">delete</button></td>";
+                        echo "<td>  <button type=\"submit\" class=\"btn btn-danger \" data-toggle=\"modal\">delete</button></td>";
                         echo '</form>';
                         echo '</tr>';
                          $i++;
@@ -1144,7 +1156,7 @@
         <script>
           
             function get_trade_filter() {
-              
+                
                 var str =  document.getElementById("trade_filter").value;  
                 document.cookie = "trade_filter="+str;  
                 var id = <?php echo(json_encode($_GET['id'])); ?> ;

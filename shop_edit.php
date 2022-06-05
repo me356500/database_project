@@ -1,11 +1,11 @@
 <?php 
 header("Content-Type: text/html; charset=utf8");
 include 'config.php';
-$mealname = $_POST["mealname"];
+
 $price = $_POST["price"];   
 $quantity = $_POST["quantity"];
 $account = $_POST["account"];
-
+$pid = $_POST["pid"];
 session_start();
 $_SESSION['account'] = ".$account.";
 
@@ -70,10 +70,10 @@ if(( $price && $quantity ) == 0) {
      
   
 
-$sql = "update goods set price = ?, quantity= ? where name=?";
+$sql = "update goods set price = ?, quantity= ? where pid=$pid";
 $stmt = mysqli_stmt_init($link); 
 mysqli_stmt_prepare($stmt, $sql); 
-mysqli_stmt_bind_param($stmt, 'iis',$price,$quantity,$mealname  ); 
+mysqli_stmt_bind_param($stmt, 'ii',$price,$quantity); 
 mysqli_stmt_execute($stmt); 
 $result = $stmt->get_result();
 mysqli_stmt_close($stmt);

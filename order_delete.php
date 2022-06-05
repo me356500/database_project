@@ -4,7 +4,8 @@ include 'config.php';
 $oid=$_POST["oid"];
 $account = $_POST["account"];
 $price = $_POST["price"];
-
+session_start();
+$_SESSION['account'] = ".$account.";
 $n_time = date("Y-m-d H:i:s");
 
 
@@ -41,8 +42,7 @@ try {
     throw $e; // but the error must be handled anyway
 }
 
-session_start();
-$_SESSION['account'] = ".$account.";
+
 
 echo "
 <script> 
