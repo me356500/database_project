@@ -5,7 +5,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <!-- Bootstrap CSS -->
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,7 +17,14 @@
 </head>
 
 <body>
+  <?php
+  //session_start();
+  //if(!isset($_SESSION['account'])) {
+   // header('Location: index.html');
+    //exit();
+  //}
  
+  ?>
   <nav class="navbar navbar-inverse">
     <div class="container-fluid">
       <div class="navbar-header">
@@ -34,7 +41,26 @@
       <li><a href="#menu2">My Order</a></li>
       <li><a href="#menu3">Shop Order</a></li>
       <li><a href="#menu4">Transaction Record</a></li>
-      <li><a href="index.html">Logout</a></li>
+      <script>
+        function deleteAllCookies() {
+        var cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+            
+            var cookie = cookies[i];
+            var eqPos = cookie.indexOf("=");
+            var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+        }
+        function clearAndRedirect(link) {
+            deleteAllCookies();
+            <?php 
+            
+            session_unset(); ?>
+            document.location = link;
+        }
+        </script>
+        <li><a href="javascript:clearAndRedirect('index.html')">Logout</a></li>
     </ul>
     
     <div class="tab-content">
@@ -188,7 +214,9 @@
         <form class="form-horizontal" action="action_page.php" method="POST">
           <?php
               $acc = $_GET['id'];
+              $odr = $_GET["order"];
               echo '<input type="hidden" name="uname" value='.$acc.'>';
+              echo '<input type="hidden" name="order" value='.$odr.'>';
             ?>  
           <div class="form-group">
               <label class="control-label col-sm-1" for="Shop">Shop</label>
@@ -391,7 +419,6 @@
               </tbody>
             </table>
             <?php
-  
   $sql = "select distinct SID from store";
   
   $stmt = mysqli_stmt_init($link); 
@@ -403,6 +430,7 @@
     echo '<div class="modal fade" id="' . $rs[0] . '"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
     echo '<div class="modal-dialog">';
     echo '<div class="modal-content">';
+
     echo '<div class="modal-header">';
     echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
     echo '<h4 class="modal-title">menu</h4>';
@@ -418,7 +446,7 @@
     echo '<th scope="col">meal name</th>';
     echo '<th scope="col">price</th>';
     echo '<th scope="col">Quantity</th>';
-    echo '<th scope="col">Order check</th>';
+    echo '<th scope="col"></th>';
     echo '</tr>';
     echo '</thead>';
     echo '<tbody>';
@@ -430,27 +458,150 @@
     $j = 1;
     
     while($rss=mysqli_fetch_row($data_2)){
+      echo "
+        <script>
+          var token='<?php echo $rss[0];?>';
+         
+          function insc(temp) {
+              alert(temp);
+              var count = document.getElenmentById(temp).innerHTML;
+              document.getElementById(temp).innerHTML=parseInt(temp)+1;
+          }
+          function dec(temp) {
+            var count = document.getElenmentById(temp).innerHTML;
+            if(parseInt(temp) > 0){
+              document.getElementById(temp).innerHTML=parseInt(temp)-1;
+            };
+          }
+        </script>";
       echo '<tr>';
       echo "<th scope=\"row\">" . $j . "</th>";
       echo '<td><img src="data:' . $rss[4] . ';base64,' . $rss[3] . '" /></td>';
       echo "<td>" . $rss[0] . "</td>";
       echo "<td>" . $rss[1] . "</td>";
       echo "<td>" . $rss[2] . "</td>";
-      echo "<td> <input type=\"checkbox\" id=" . $rss[0] . " value=" . $rss[0] . "></td>";
+      //echo "<td> <input type=\"checkbox\" id=" . $rss[0] . " value=" . $rss[0] . "></td>";
+      echo "<td>";
+      //echo "<button type=\"button\" class=\"btn btn-primary btn-sm\" onclick=\"insc()\"></button>";
+      //echo "<button type=\"button\" class=\"btn-sm\" id=" . $rss[0] . "  value=\"0\">0</button>";
+      //echo "<button type=\"button\" class=\"btn btn-primary btn-sm\" onclick=\"dec()\">-</button>";
+
+      echo "<input type=\"number\" id=pid".$rss[5]." min=\"0\" max=".$rss[2]." step=\"1\" value=\"0\" oninput=\"function2(this.value, ".$rss[5].")\">";
+      
+      echo "</td>";
       $j++;
     }
+
+
     echo '</tbody>';
     echo '</table>';
     echo '</div>';
     echo '</div>';
     echo '</div>';
+    echo '<label class="control-label col-sm-1" for="Type">Type</label>';
+    echo '<div class="col-sm-5">';
+    echo '<select class="form-control" id="Type" name="Type">';
+    echo '<option>Delivery</option>';
+    echo '<option>Pick-Up</option>';
+    echo '</select>';
+    echo '</div>';
+
     echo '<div class="modal-footer">';
-    echo '<button type="button" class="btn btn-default" data-dismiss="modal">Order</button>';
+#    $id = $_GET['id'];
+#    echo '<form action="calculate.php" method="POST">';
+#    echo '<input type="hidden" name="sid" value='.$rs[0].'>'; 
+#    echo '<input type="hidden" name="account" value='.$id.'>';
+#    $type = $_COOKIE['Type'];
+#    echo '<input type="hidden" name="Type" value='.$type.'>';
+    echo '<button type="button" class="btn btn-info" data-toggle="modal" data-target="#calculate" onclick="function1('.$rs[0].')">Calculate Price</button>';
+    echo '</div>';
+    
     echo '</div>';
     echo '</div>';
     echo '</div>';
-    echo '</div>';
+
+
   }
+  echo "<script>  
+    function function1(val) {  
+      document.cookie = 'sid='+val; 
+    } 
+  </script>";
+
+  echo "<script>  
+    function function2(val, id) { 
+      var str = 'pid'+ id +'='+val;
+      document.cookie = str; 
+    }
+  </script>";
+  
+  echo "<script>  
+        var str =  document.getElementById('Type').value;  
+        document.cookie = 'Type='+str;  
+      </script>";
+  
+  $id = $_GET['id'];
+  echo '<div class="modal fade" id="calculate"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
+    echo '<div class="modal-dialog">';
+      echo '<div class="modal-content">';
+        echo '<div class="modal-header">';
+          echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+          echo '<h4 class="modal-title">order details</h4>';
+        echo '</div>';
+        echo '<div class="modal-body">';
+          echo '<div class="row">';
+            echo '<div class="  col-xs-12">';
+              echo '<table class="table" style=" margin-top: 15px;">';
+                echo '<thead>';
+                  echo '<tr>';
+                    echo '<th scope="col">Picture</th>';
+                    echo '<th scope="col">meal name</th>';
+                    echo '<th scope="col">price</th>';
+                    echo '<th scope="col">Order Quantity</th>';
+                  echo '</tr>';
+                echo '</thead>';
+                echo '<tbody>';
+                $sql_b = 'select goods.img, goods.imgtype, goods.name, goods.price, goods.PID from goods where goods.SID = '.$_COOKIE['sid'];
+                $stmt_b = mysqli_stmt_init($link); 
+                mysqli_stmt_prepare($stmt_b, $sql_b); 
+                mysqli_stmt_execute($stmt_b); 
+                $data_b =$stmt_b->get_result();
+                $subtotal = 0;
+                while($result_b = mysqli_fetch_row($data_b)){
+                  $subtotal = $subtotal + $result_b[3] * (int)$_COOKIE['pid'.$result_b[4]];
+                  echo '<tr>';
+                  echo '<td><img src="data:'.$result_b[1].';base64,'.$result_b[0].'" /></td>';
+                  echo '<td>'.$result_b[2].'</td>';
+                  echo '<td>'.$result_b[3].'</td>';
+                  echo '<td>'.$_COOKIE['pid'.$result_b[4]].'</td>';
+                  echo '</tr>';
+                }
+                echo '</tbody>';
+              echo '</table>';
+              echo 'Subtotal: $'.$subtotal.'<br>';
+              $sql_l = "select ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) from user, store where store.SID = ".$_COOKIE['sid']." and user.account = '$id'";
+              $stmt_l = mysqli_stmt_init($link); 
+              mysqli_stmt_prepare($stmt_l, $sql_l); 
+              mysqli_stmt_execute($stmt_l); 
+              $data_l =$stmt_l->get_result();
+              $delivery=mysqli_fetch_row($data_l);
+              $t = $delivery[0] / 100;
+              $fee = round($t);
+              if($fee < 10){
+                $fee = 10;
+              }
+              if($_COOKIE['Type'] == 'Pick-Up'){
+                $fee = 0;
+              }
+              echo 'Delivery fee: $'.$fee.'<br>';
+              $total = $subtotal + $fee;
+              echo 'Total Price: $'.$total;
+            echo '</div>';
+          echo '</div>';
+        echo '</div>';
+      echo '</div>';
+    echo '</div>';
+  echo '</div>';
 ?>
 
                 <!-- Modal -->
@@ -463,7 +614,6 @@
 
       <form action="shop_reg.php" class="fh5co-form animate-box" data-animate-effect="fadeIn" method="post">
         <h3> Start a business </h3>
-        <a href="index.html">Logout</a>
         <div class="form-group ">
           <div class="row">
             <div class="col-xs-2">
@@ -710,15 +860,42 @@
         <div class="form-group">
           <label class="control-label col-sm-1" for="status">Status</label>
             <div class="col-sm-5">
-              <select class="form-control" id="status" name="status">
-                  <option>all</option>
-                  <option>finished</option>
-                  <option>not finished</option>
-                  <option>cancel</option>
+              <select class="form-control" id="order_filter" name="order_filter" onchange="get_order_filter();">
+                  <option value="All">All</option>
+                  <option value="Finished">Finished</option>
+                  <option value="Nfinished">Not finished</option>
+                  <option value="Cancel">Cancel</option>
               </select>
             </div>
         </div>
-
+        <script>
+            function get_order_filter() {
+                var str =  document.getElementById("order_filter").value;  
+                document.cookie = "order_filter="+str;  
+                window.location.reload();
+            }    
+        </script> 
+        <script>
+                function getCookie(cname) {
+                let name = cname + "=";
+                let decodedCookie = decodeURIComponent(document.cookie);
+                let ca = decodedCookie.split(';');
+                for(let i = 0; i <ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                    }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                    }
+                    }
+                    return "";
+                }
+                let x = getCookie('order_filter');
+                if(x == "")
+                    x = "All";
+                document.getElementById('order_filter').value = x;
+              </script>             
         <div class="row">
           <div class="  col-xs-8">
             <table class="table" style=" margin-top: 15px;">
@@ -737,7 +914,19 @@
                 <?php
                   echo '<tbody>';
                   $id = $_GET['id'];
-                  $sql = 'select order_list.OID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and order_list.UID = user.UID and order_list.SID = store.SID';
+                  $filter;
+                  if(isset($_COOKIE["order_filter"]))
+                    $filter = $_COOKIE["order_filter"];
+                  else 
+                    $filter = "All";
+                    if($filter == "All") 
+                        $sql = 'select order_list.OID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and order_list.UID = user.UID and order_list.SID = store.SID';
+                    else if($filter=="Finished")
+                        $sql = 'select order_list.OID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and order_list.UID = user.UID and order_list.SID = store.SID and order_list.state = "Finished" ';
+                    else if($filter=="Nfinished")
+                        $sql = 'select order_list.OID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and order_list.UID = user.UID and order_list.SID = store.SID and order_list.state = "Nfinished" ';
+                    else if($filter=="Cancel")
+                        $sql = 'select order_list.OID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and order_list.UID = user.UID and order_list.SID = store.SID and order_list.state = "Cancel" ';
                   $data = mysqli_query($link, $sql);
                   while($rs=mysqli_fetch_row($data)) {
                     echo '<tr>';
@@ -747,7 +936,16 @@
                     echo '<td>'.$rs[3].'</td>';
                     echo '<td>'.$rs[4].'</td>';
                     echo '<td>'.$rs[5].'</td>';
+                    
                     echo '<td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#my_order'.$rs[0].'">order details</button></td>';
+                    if($rs[1] == "Nfinished") {
+                      echo '<form action="order_delete.php"  method="post">';
+                      echo '<input type="hidden" name="oid" value='.$rs[0].'>'; 
+                      echo '<input type="hidden" name="account" value='.$id.'>';
+                      echo '<input type="hidden" name="price" value='.$rs[5].'>';
+                      echo '<td><button type="submit" class="btn btn-danger" data-toggle="modal" ">Cancel</button></td>';
+                      echo '</form>';
+                    }
                     echo '</tr>';
                   }
                   echo '</tbody>';
@@ -781,7 +979,7 @@
                                 echo '</tr>';
                               echo '</thead>';
                               echo '<tbody>';
-                              $sql_in = 'select goods.img, goods.imgtype, goods.name, goods.price, amount.quantity from amount, goods, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID and amount.PID = goods.PID';
+                              $sql_in = 'select goods.img, goods.imgtype, goods.name, goods.price, amount.quantity, order_list.category from amount, goods, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID and amount.PID = goods.PID';
                               $stmt_in = mysqli_stmt_init($link); 
                               mysqli_stmt_prepare($stmt_in, $sql_in); 
                               mysqli_stmt_execute($stmt_in); 
@@ -810,6 +1008,9 @@
                             if($fee < 10){
                               $fee = 10;
                             }
+                            if($rdd[5] == 'Pick-Up'){
+                              $fee = 0;
+                            }
                             echo 'Delivery fee: $'.$fee.'<br>';
                             $total = $subtotal + $fee;
                             echo 'Total Price: $'.$total;
@@ -829,15 +1030,30 @@
         <div class="form-group">
           <label class="control-label col-sm-1" for="status">Status</label>
             <div class="col-sm-5">
-              <select class="form-control" id="status" name="status">
-                  <option>all</option>
-                  <option>finished</option>
-                  <option>not finished</option>
-                  <option>cancel</option>
+              <select class="form-control" id="of" name="of" onchange="get_order_f();">
+                  <option value="All">All</option>
+                  <option value="Finished">Finished</option>
+                  <option value="Nfinished">Not finished</option>
+                  <option value="Cancel">Cancel</option>
               </select>
             </div>
         </div>
-
+        <script>
+            function get_order_f() {
+                var str =  document.getElementById("of").value;  
+                document.cookie = "of="+str;  
+                
+                
+                window.location.reload();
+            }    
+        </script> 
+        <script>
+               
+                let y = getCookie('of');
+                if(y == "")
+                    y = "All";
+                document.getElementById('of').value = y;
+              </script>      
         <div class="row">
           <div class="  col-xs-8">
             <table class="table" style=" margin-top: 15px;">
@@ -851,13 +1067,27 @@
                   <th scope="col">Total Price</th>
                   <th scope="col">Order Details</th>
                   <th scope="col">Action</th>
+                  <th scope="col"></th>
                 </tr>
               </thead>
                 <?php
                   echo '<tbody>';
                   $id = $_GET['id'];
-                  $sql = 'select order_list.OID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and store.UID = user.UID and order_list.SID = store.SID';
-                  $data = mysqli_query($link, $sql);
+                  $filter;
+                  if(isset($_COOKIE["of"]))
+                    $filter = $_COOKIE["of"];
+                  else 
+                    $filter = "All";
+                
+                  if($filter == "All")
+                    $sql = 'select order_list.OID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and store.UID = user.UID and order_list.SID = store.SID';
+                  else if($filter == "Finished")
+                    $sql = 'select order_list.OID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and store.UID = user.UID and order_list.SID = store.SID and order_list.state = "Finished"';
+                  else  if($filter == "Nfinished")
+                    $sql = 'select order_list.OID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and store.UID = user.UID and order_list.SID = store.SID and order_list.state = "Nfinished"';
+                  else   if($filter == "Cancel")
+                    $sql = 'select order_list.OID, order_list.state, order_list.build_time, order_list.end_time, store.name, order_list.price from order_list, store, user where user.account = "'.$id.'" and store.UID = user.UID and order_list.SID = store.SID and order_list.state = "Cancel"';
+                    $data = mysqli_query($link, $sql);
                   while($rs=mysqli_fetch_row($data)) {
                     echo '<tr>';
                     echo '<th scope="row">'.$rs[0].'</th>';
@@ -867,11 +1097,41 @@
                     echo '<td>'.$rs[4].'</td>';
                     echo '<td>'.$rs[5].'</td>';
                     echo '<td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#shop_order'.$rs[0].'">order details</button></td>';
+                    if($rs[1] == "Nfinished") {
+                      $id = $_GET['id'];
+                      echo '<form action="order_finish.php"  method="post">';
+                      echo '<input type="hidden" name="oid" value='.$rs[0].'>'; 
+                      echo '<input type="hidden" name="account" value='.$id.'>';  
+                      echo '<td><button type="submit" class="btn btn-success" data-toggle="modal"">Done</button></td>';
+                      echo '</form>';
+                      echo '<form action="order_delete.php"  method="post">';
+                      echo '<input type="hidden" name="oid" value='.$rs[0].'>'; 
+                      echo '<input type="hidden" name="account" value='.$id.'>';
+                      echo '<input type="hidden" name="price" value='.$rs[5].'>';
+                      echo '<td><button type="submit" class="btn btn-danger" data-toggle="modal" ">Cancel</button></td>';
+                      echo '</form>';
+                    }
                     echo '</tr>';
                   }
                   echo '</tbody>';
                 ?>
             </table>
+            <?php
+               $id = $_GET['id'];
+               $sql_s = 'select store.SID from store, user where user.account = "'.$id.'" and user.UID = store.UID';
+               $stmt_s = mysqli_stmt_init($link); 
+               mysqli_stmt_prepare($stmt_s, $sql_s); 
+               mysqli_stmt_execute($stmt_s); 
+               $data_s =$stmt_s->get_result();
+               $sid=mysqli_fetch_row($data_s);
+               if($sid) {
+                $sql_o = "select distinct order_list.OID from order_list";
+                $stmt_o = mysqli_stmt_init($link); 
+                mysqli_stmt_prepare($stmt_o, $sql_o); 
+                mysqli_stmt_execute($stmt_o); 
+                $data_o =$stmt_o->get_result();
+               }
+            ?>
             <?php
               $id = $_GET['id'];
               $sql_s = 'select store.SID from store, user where user.account = "'.$id.'" and user.UID = store.UID';
@@ -907,7 +1167,7 @@
                                   echo '</tr>';
                                 echo '</thead>';
                                 echo '<tbody>';
-                                $sql_in = 'select goods.img, goods.imgtype, goods.name, goods.price, amount.quantity from amount, goods, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID and amount.PID = goods.PID';
+                                $sql_in = 'select goods.img, goods.imgtype, goods.name, goods.price, amount.quantity, order_list.category from amount, goods, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID and amount.PID = goods.PID';
                                 $stmt_in = mysqli_stmt_init($link); 
                                 mysqli_stmt_prepare($stmt_in, $sql_in); 
                                 mysqli_stmt_execute($stmt_in); 
@@ -936,6 +1196,9 @@
                               if($fee < 10){
                                 $fee = 10;
                               }
+                              if($rdd[5] == 'Pick-Up'){
+                                $fee = 0;
+                              }
                               echo 'Delivery fee: $'.$fee.'<br>';
                               $total = $subtotal + $fee;
                               echo 'Total Price: $'.$total;
@@ -953,18 +1216,52 @@
       </div>
 
       <div id="menu4" class="tab-pane fade">
+      
         <div class="form-group">
           <label class="control-label col-sm-1" for="status">Status</label>
             <div class="col-sm-5">
-              <select class="form-control" id="status" name="status">
-                  <option>all</option>
-                  <option>payment</option>
-                  <option>recieve</option>
-                  <option>recharge</option>
+              <select class="form-control" id="trade_filter" name="trade_filter" onchange="get_trade_filter();">
+                  <option value="All">All</option>
+                  <option value="Payment">Payment</option>
+                  <option value="Receive">Receive</option>
+                  <option value="Recharge">Recharge</option>
               </select>
             </div>
         </div>
+              
+        <script>
+           
+            function get_trade_filter() {
+                var str =  document.getElementById("trade_filter").value;  
+                
+                document.cookie = "trade_filter="+str;  
+                 
+                window.location.reload();
+                
+            }    
+        </script>
+        <script>
+                function getCookie(cname) {
+                let name = cname + "=";
+                let decodedCookie = decodeURIComponent(document.cookie);
+                let ca = decodedCookie.split(';');
+                for(let i = 0; i <ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                    }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                    }
+                    }
+                    return "";
+                }
 
+                let x = getCookie('trade_filter');
+                if(x == "")
+                    x = "All";
+                document.getElementById('trade_filter').value = x;
+              </script>
         <div class="row">
           <div class="  col-xs-8">
             <table class="table" style=" margin-top: 15px;">
@@ -977,22 +1274,40 @@
                   <th scope="col">Amount Change</th>
                 </tr>
               </thead>
+              
               <?php
-                  echo '<tbody>';
-                  $id = $_GET['id'];
-                  $sql = 'select trade.TID, trade.type, trade.end_time, trade.price, trade.target from trade, user where trade.UID = user.UID and user.account = "'.$id.'"';
+                echo '<tbody>';
+                $id = $_GET['id'];
+                $filter;
+                if(isset($_COOKIE["trade_filter"]))
+                    $filter = $_COOKIE["trade_filter"];
+                else 
+                    $filter = "All";
+                
+                
+                if($filter == "Recharge") {
+                    $sql = 'select trade.TID, trade.type, trade.end_time, trade.price, trade.target from trade, user where trade.UID = user.UID and user.account = "'.$id.'" and trade.type = "Recharge" ';
+                
+                }
+                else if($filter == "Receive") {
+                    $sql = 'select trade.TID, trade.type, trade.end_time, trade.price, trade.target from trade, user where trade.UID = user.UID and user.account = "'.$id.'" and trade.type = "Receive" ';
+                  
+                }
+                else if($filter == "Payment") {
+                    $sql = 'select trade.TID, trade.type, trade.end_time, trade.price, trade.target from trade, user where trade.UID = user.UID and user.account = "'.$id.'" and trade.type = "Payment" ';
+                  
+                }
+                else {
+                    $sql = 'select trade.TID, trade.type, trade.end_time, trade.price, trade.target from trade, user where trade.UID = user.UID and user.account = "'.$id.'"';
+                    
+                }
                   $data = mysqli_query($link, $sql);
                   while($rs=mysqli_fetch_row($data)) {
                     echo '<tr>';
                     echo '<th scope="row">'.$rs[0].'</th>';
                     echo '<td>'.$rs[1].'</td>';
                     echo '<td>'.$rs[2].'</td>';
-                    if($rs[1] == 'recharge'){
-                      echo '<td>'.$id.'</td>';
-                    }
-                    else{
-                      echo '<td>'.$rs[4].'</td>';
-                    }
+                    echo '<td>'.$rs[4].'</td>';
                     echo '<td>'.$rs[3].'</td>';
                     echo '</tr>';
                   }
