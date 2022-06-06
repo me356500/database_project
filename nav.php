@@ -18,11 +18,15 @@
 
 <body>
   <?php
-  //session_start();
-  //if(!isset($_SESSION['account'])) {
-   // header('Location: index.html');
-    //exit();
-  //}
+
+  session_start();
+  if (isset($_GET['session_name'])) {
+    $_SESSION['account'] = $_GET['session_name'];
+  }
+  if(!isset($_SESSION['account'])) {
+    header('Location: index.html');
+    exit();
+  }
  
   ?>
   <nav class="navbar navbar-inverse">
@@ -290,9 +294,9 @@
               $name = '';
               $distance = 'all';
             }
-            echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=0">order by name</a><br>';
-            echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=1">order by category</a><br>';
-            echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=2">order by distance</a>';
+            # echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=0">order by name</a><br>';
+            # echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=1">order by category</a><br>';
+            # echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=2">order by distance</a>';
           ?>
         </div>
         <div class="row">
@@ -404,7 +408,7 @@
                     else{
                       echo "<td>medium</td>";
                     }
-                    echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">Open menu</button></td>";
+                    echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#open_menu" . $rs[0] . "\">Open menu</button></td>";
                     echo '</tr>';
                     $i++;
                   }
@@ -419,6 +423,7 @@
               </tbody>
             </table>
             <?php
+  
   $sql = "select distinct SID from store";
   
   $stmt = mysqli_stmt_init($link); 
@@ -427,10 +432,9 @@
   $data =$stmt->get_result();
   while($rs=mysqli_fetch_row($data)){
     
-    echo '<div class="modal fade" id="' . $rs[0] . '"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
+    echo '<div class="modal fade" id="open_menu' . $rs[0] . '"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
     echo '<div class="modal-dialog">';
     echo '<div class="modal-content">';
-
     echo '<div class="modal-header">';
     echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
     echo '<h4 class="modal-title">menu</h4>';
@@ -446,7 +450,7 @@
     echo '<th scope="col">meal name</th>';
     echo '<th scope="col">price</th>';
     echo '<th scope="col">Quantity</th>';
-    echo '<th scope="col"></th>';
+    echo '<th scope="col">amount</th>';
     echo '</tr>';
     echo '</thead>';
     echo '<tbody>';
@@ -482,17 +486,17 @@
       echo "<td>" . $rss[2] . "</td>";
       //echo "<td> <input type=\"checkbox\" id=" . $rss[0] . " value=" . $rss[0] . "></td>";
       echo "<td>";
-      //echo "<button type=\"button\" class=\"btn btn-primary btn-sm\" onclick=\"insc()\"></button>";
-      //echo "<button type=\"button\" class=\"btn-sm\" id=" . $rss[0] . "  value=\"0\">0</button>";
-      //echo "<button type=\"button\" class=\"btn btn-primary btn-sm\" onclick=\"dec()\">-</button>";
-
+      //default cookie
+      echo " <script>
+          var str = 'pid'+$rss[5]+'=0';
+          document.cookie = str; 
+      </script>";
       echo "<input type=\"number\" id=pid".$rss[5]." min=\"0\" max=".$rss[2]." step=\"1\" value=\"0\" oninput=\"function2(this.value, ".$rss[5].")\">";
-      
       echo "</td>";
+      
       $j++;
     }
-
-
+   
     echo '</tbody>';
     echo '</table>';
     echo '</div>';
@@ -500,9 +504,9 @@
     echo '</div>';
     echo '<label class="control-label col-sm-1" for="Type">Type</label>';
     echo '<div class="col-sm-5">';
-    echo '<select class="form-control" id="Type" name="Type">';
-    echo '<option>Delivery</option>';
-    echo '<option>Pick-Up</option>';
+    echo '<select class="form-control" id="Type" name="Type" onchange="test1(this.value);">';
+      echo '<option value="Delivery">Delivery</option>';
+      echo '<option value="Pick-Up">Pick-Up</option>';
     echo '</select>';
     echo '</div>';
 
@@ -522,11 +526,7 @@
 
 
   }
-  echo "<script>  
-    function function1(val) {  
-      document.cookie = 'sid='+val; 
-    } 
-  </script>";
+  //$( '#calculate' ).load(window.location.href + '#calculate' );
 
   echo "<script>  
     function function2(val, id) { 
@@ -534,76 +534,41 @@
       document.cookie = str; 
     }
   </script>";
-  
-  echo "<script>  
-        var str =  document.getElementById('Type').value;  
-        document.cookie = 'Type='+str;  
-      </script>";
-  
-  $id = $_GET['id'];
-  echo '<div class="modal fade" id="calculate"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
-    echo '<div class="modal-dialog">';
-      echo '<div class="modal-content">';
-        echo '<div class="modal-header">';
-          echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
-          echo '<h4 class="modal-title">order details</h4>';
-        echo '</div>';
-        echo '<div class="modal-body">';
-          echo '<div class="row">';
-            echo '<div class="  col-xs-12">';
-              echo '<table class="table" style=" margin-top: 15px;">';
-                echo '<thead>';
-                  echo '<tr>';
-                    echo '<th scope="col">Picture</th>';
-                    echo '<th scope="col">meal name</th>';
-                    echo '<th scope="col">price</th>';
-                    echo '<th scope="col">Order Quantity</th>';
-                  echo '</tr>';
-                echo '</thead>';
-                echo '<tbody>';
-                $sql_b = 'select goods.img, goods.imgtype, goods.name, goods.price, goods.PID from goods where goods.SID = '.$_COOKIE['sid'];
-                $stmt_b = mysqli_stmt_init($link); 
-                mysqli_stmt_prepare($stmt_b, $sql_b); 
-                mysqli_stmt_execute($stmt_b); 
-                $data_b =$stmt_b->get_result();
-                $subtotal = 0;
-                while($result_b = mysqli_fetch_row($data_b)){
-                  $subtotal = $subtotal + $result_b[3] * (int)$_COOKIE['pid'.$result_b[4]];
-                  echo '<tr>';
-                  echo '<td><img src="data:'.$result_b[1].';base64,'.$result_b[0].'" /></td>';
-                  echo '<td>'.$result_b[2].'</td>';
-                  echo '<td>'.$result_b[3].'</td>';
-                  echo '<td>'.$_COOKIE['pid'.$result_b[4]].'</td>';
-                  echo '</tr>';
-                }
-                echo '</tbody>';
-              echo '</table>';
-              echo 'Subtotal: $'.$subtotal.'<br>';
-              $sql_l = "select ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) from user, store where store.SID = ".$_COOKIE['sid']." and user.account = '$id'";
-              $stmt_l = mysqli_stmt_init($link); 
-              mysqli_stmt_prepare($stmt_l, $sql_l); 
-              mysqli_stmt_execute($stmt_l); 
-              $data_l =$stmt_l->get_result();
-              $delivery=mysqli_fetch_row($data_l);
-              $t = $delivery[0] / 100;
-              $fee = round($t);
-              if($fee < 10){
-                $fee = 10;
-              }
-              if($_COOKIE['Type'] == 'Pick-Up'){
-                $fee = 0;
-              }
-              echo 'Delivery fee: $'.$fee.'<br>';
-              $total = $subtotal + $fee;
-              echo 'Total Price: $'.$total;
-            echo '</div>';
-          echo '</div>';
-        echo '</div>';
-      echo '</div>';
-    echo '</div>';
-  echo '</div>';
-?>
 
+
+  // Get cookie immediately
+  echo "<script>  
+        function getcookie(cName) {
+          const name = cName + '=';
+          const cDecoded = decodeURIComponent(document.cookie); //to be careful
+          const cArr = cDecoded .split('; ');
+          let res;
+          cArr.forEach(val => {
+              if (val.indexOf(name) === 0) res = val.substring(name.length);
+          })
+          return res;
+        }
+      </script>";
+    
+
+  $id = $_GET['id'];
+  
+?>
+<script>  
+    function function1(val) {  
+      document.cookie = 'sid='+val; 
+      var str = document.getElementById("Type").value;  
+      document.cookie = 'Type='+str; 
+      var id = <?php echo(json_encode($_GET['id'])); ?> ;
+      var dst = 'calculate.php?id='+id;
+      location.href=dst;
+      //$( '#calculate' ).load(window.location.href + '#calculate' );
+    } 
+    function test1(va){
+      document.getElementById("Type").value = va;  
+      document.cookie = 'Type='+va; 
+    }
+  </script>
                 <!-- Modal -->
    
           </div>
@@ -614,6 +579,7 @@
 
       <form action="shop_reg.php" class="fh5co-form animate-box" data-animate-effect="fadeIn" method="post">
         <h3> Start a business </h3>
+        <a href="index.html">Logout</a>
         <div class="form-group ">
           <div class="row">
             <div class="col-xs-2">
@@ -789,11 +755,11 @@
                 <?php
                       $id = $_GET['id'];
                       echo '<input type="hidden" name="account" value='.$acc.'>';
-                      $sql = "select goods.PID, img, imgtype,goods.name, goods.price, goods.quantity from goods where SID=(select SID from store where UID = (select UID from user where account = '$id'))";
+                      $sql = "select goods.PID, img, imgtype,goods.name, goods.price, goods.quantity,goods.SID from goods where SID=(select SID from store where UID = (select UID from user where account = '$id'))";
                       $data = mysqli_query($link, $sql);
                       $i = 1;
                       while($rs=mysqli_fetch_row($data)) {
-                        echo '<form action="shop_edit.php"  method="post">';
+                        
                         
                         echo '<tr>';
                         echo "<th scope=\"row\">" . $i . "</th>";
@@ -801,10 +767,9 @@
                         echo "<td>" . $rs[3] . "</td>";
                         echo "<td>" . $rs[4] . "</td>";
                         echo "<td>" . $rs[5] . "</td>";
-                        echo '<input type="hidden" name="mealname" value='.$rs[3].'>';   
-                        echo '<input type="hidden" name="account" value='.$id.'>';                
-                        echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">Edit</button></td>";
-                        echo '<div class="modal fade" id="' . $rs[0] . '"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
+                                  
+                        echo "<td>  <button type=\"button\" class=\"btn btn-info \" data-toggle=\"modal\" data-target=\"#edit" . $rs[0] . "\">Edit</button></td>";
+                        echo '<div class="modal fade" id="edit' . $rs[0] . '"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
                         echo '<div class="modal-dialog" role="document">';
                         echo '<div class="modal-content">';
                         echo '<div class="modal-header">';
@@ -814,6 +779,10 @@
                         echo '<span aria-hidden="true">&times;</span>';
                         echo '</button>';
                         echo ' </div>';
+                        echo '<form action="shop_edit.php"  method="post">';
+ 
+                        echo '<input type="hidden" name="account" value='.$id.'>';  
+                        echo '<input type="hidden" name="pid" value='.$rs[0].'>';    
                               echo '<div class="modal-body">';
                                   echo '<div class="row" >';
                                     echo '<div class="col-xs-6">';
@@ -828,16 +797,18 @@
                               echo '</div>';
                               echo '<div class="modal-footer">';
                                   echo '<button type = "submit" class="btn btn-secondary" >Edit</button> ';    
+
                               echo '</div>';
+                              echo '</form>';
                             echo '</div>';
                           echo '</div>';
                         echo '</div>';   
-                        echo '</form>';
+                        
                         
                         echo '<form action="shop_delete.php"  method="post">';
                         echo '<input type="hidden" name="pid" value='.$rs[0].'>'; 
                         echo '<input type="hidden" name="account" value='.$id.'>';  
-                        echo "<td>  <button type=\"submit\" class=\"btn btn-danger \" data-toggle=\"modal\" data-target=\"#" . $rs[0] . "\">delete</button></td>";
+                        echo "<td>  <button type=\"submit\" class=\"btn btn-danger \" data-toggle=\"modal\">delete</button></td>";
                         echo '</form>';
                         echo '</tr>';
                          $i++;
@@ -855,7 +826,7 @@
 
 
       </div>
-
+    
       <div id="menu2" class="tab-pane fade">
         <div class="form-group">
           <label class="control-label col-sm-1" for="status">Status</label>
@@ -868,11 +839,19 @@
               </select>
             </div>
         </div>
+        
         <script>
             function get_order_filter() {
+                
                 var str =  document.getElementById("order_filter").value;  
-                document.cookie = "order_filter="+str;  
-                window.location.reload();
+                document.cookie = "order_filter="+str; 
+                var id = <?php echo(json_encode($_GET['id'])); ?> ;
+                var op = <?php echo(json_encode($_GET['op'])); ?> ;
+                var odr = <?php echo(json_encode($_GET['order'])); ?> ;
+                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr;
+                location.href=dst;
+               
+                
             }    
         </script> 
         <script>
@@ -979,7 +958,7 @@
                                 echo '</tr>';
                               echo '</thead>';
                               echo '<tbody>';
-                              $sql_in = 'select goods.img, goods.imgtype, goods.name, goods.price, amount.quantity, order_list.category from amount, goods, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID and amount.PID = goods.PID';
+                              $sql_in = 'select goods.img, goods.imgtype, goods.name, goods.price, amount.quantity from amount, goods, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID and amount.PID = goods.PID';
                               $stmt_in = mysqli_stmt_init($link); 
                               mysqli_stmt_prepare($stmt_in, $sql_in); 
                               mysqli_stmt_execute($stmt_in); 
@@ -1007,9 +986,6 @@
                             $fee = round($t);
                             if($fee < 10){
                               $fee = 10;
-                            }
-                            if($rdd[5] == 'Pick-Up'){
-                              $fee = 0;
                             }
                             echo 'Delivery fee: $'.$fee.'<br>';
                             $total = $subtotal + $fee;
@@ -1040,11 +1016,14 @@
         </div>
         <script>
             function get_order_f() {
-                var str =  document.getElementById("of").value;  
-                document.cookie = "of="+str;  
-                
-                
-                window.location.reload();
+              var str =  document.getElementById("of").value;  
+              document.cookie = "of="+str;  
+              var id = <?php echo(json_encode($_GET['id'])); ?> ;
+                var op = <?php echo(json_encode($_GET['op'])); ?> ;
+                var odr = <?php echo(json_encode($_GET['order'])); ?> ;
+                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr;
+                location.href=dst;
+
             }    
         </script> 
         <script>
@@ -1167,7 +1146,7 @@
                                   echo '</tr>';
                                 echo '</thead>';
                                 echo '<tbody>';
-                                $sql_in = 'select goods.img, goods.imgtype, goods.name, goods.price, amount.quantity, order_list.category from amount, goods, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID and amount.PID = goods.PID';
+                                $sql_in = 'select goods.img, goods.imgtype, goods.name, goods.price, amount.quantity from amount, goods, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID and amount.PID = goods.PID';
                                 $stmt_in = mysqli_stmt_init($link); 
                                 mysqli_stmt_prepare($stmt_in, $sql_in); 
                                 mysqli_stmt_execute($stmt_in); 
@@ -1195,9 +1174,6 @@
                               $fee = round($t);
                               if($fee < 10){
                                 $fee = 10;
-                              }
-                              if($rdd[5] == 'Pick-Up'){
-                                $fee = 0;
                               }
                               echo 'Delivery fee: $'.$fee.'<br>';
                               $total = $subtotal + $fee;
@@ -1228,40 +1204,26 @@
               </select>
             </div>
         </div>
-              
         <script>
-           
+          let tx = getCookie('trade_filter');
+          if(tx == "")
+            tx = "All";
+          document.getElementById('trade_filter').value = tx;
+        </script>      
+        <script>
+          
             function get_trade_filter() {
+               
                 var str =  document.getElementById("trade_filter").value;  
-                
                 document.cookie = "trade_filter="+str;  
-                 
-                window.location.reload();
-                
+                var id = <?php echo(json_encode($_GET['id'])); ?> ;
+                var op = <?php echo(json_encode($_GET['op'])); ?> ;
+                var odr = <?php echo(json_encode($_GET['order'])); ?> ;
+                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr;
+                location.href=dst;
             }    
         </script>
-        <script>
-                function getCookie(cname) {
-                let name = cname + "=";
-                let decodedCookie = decodeURIComponent(document.cookie);
-                let ca = decodedCookie.split(';');
-                for(let i = 0; i <ca.length; i++) {
-                    let c = ca[i];
-                    while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                    }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
-                    }
-                    }
-                    return "";
-                }
-
-                let x = getCookie('trade_filter');
-                if(x == "")
-                    x = "All";
-                document.getElementById('trade_filter').value = x;
-              </script>
+        
         <div class="row">
           <div class="  col-xs-8">
             <table class="table" style=" margin-top: 15px;">
@@ -1297,7 +1259,7 @@
                     $sql = 'select trade.TID, trade.type, trade.end_time, trade.price, trade.target from trade, user where trade.UID = user.UID and user.account = "'.$id.'" and trade.type = "Payment" ';
                   
                 }
-                else {
+                else if($filter == "All"){
                     $sql = 'select trade.TID, trade.type, trade.end_time, trade.price, trade.target from trade, user where trade.UID = user.UID and user.account = "'.$id.'"';
                     
                 }
