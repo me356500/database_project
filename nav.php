@@ -20,6 +20,9 @@
   <?php
 
   session_start();
+  if (isset($_GET['session_name'])) {
+    $_SESSION['account'] = $_GET['session_name'];
+  }
   if(!isset($_SESSION['account'])) {
     header('Location: index.html');
     exit();
@@ -447,7 +450,7 @@
     echo '<th scope="col">meal name</th>';
     echo '<th scope="col">price</th>';
     echo '<th scope="col">Quantity</th>';
-    echo '<th scope="col">Order check</th>';
+    echo '<th scope="col">amount</th>';
     echo '</tr>';
     echo '</thead>';
     echo '<tbody>';
@@ -483,34 +486,146 @@
       echo "<td>" . $rss[2] . "</td>";
       //echo "<td> <input type=\"checkbox\" id=" . $rss[0] . " value=" . $rss[0] . "></td>";
       echo "<td>";
-      //echo "<button type=\"button\" class=\"btn btn-primary btn-sm\" onclick=\"insc()\"></button>";
-      //echo "<button type=\"button\" class=\"btn-sm\" id=" . $rss[0] . "  value=\"0\">0</button>";
-      //echo "<button type=\"button\" class=\"btn btn-primary btn-sm\" onclick=\"dec()\">-</button>";
-   
-      echo "<input type=\"number\" id=" . $rss[0] . " min=\"0\" step=\"1\" value=\"0\" onchange=\"test(this.value,".$rss[5].")\">";
+      //default cookie
+      echo " <script>
+          var str = 'pid'+$rss[5]+'=0';
+          document.cookie = str; 
+      </script>";
+      echo "<input type=\"number\" id=pid".$rss[5]." min=\"0\" max=".$rss[2]." step=\"1\" value=\"0\" oninput=\"function2(this.value, ".$rss[5].")\">";
       echo "</td>";
       
       $j++;
     }
-    echo "<script>
-      function test(val, id) {
-        var str = 'pid'+id+'='+val;
-        document.cookie = str;
-      }
-    </script>";
+   
     echo '</tbody>';
     echo '</table>';
     echo '</div>';
     echo '</div>';
     echo '</div>';
+    echo '<label class="control-label col-sm-1" for="Type">Type</label>';
+    echo '<div class="col-sm-5">';
+    echo '<select class="form-control" id="Type" name="Type" onchange="test1(this.value);">';
+      echo '<option value="Delivery">Delivery</option>';
+      echo '<option value="Pick-Up">Pick-Up</option>';
+    echo '</select>';
+    echo '</div>';
+
     echo '<div class="modal-footer">';
-    echo '<button type="button" class="btn btn-default" data-dismiss="modal">Calculate Price</button>';
+#    $id = $_GET['id'];
+#    echo '<form action="calculate.php" method="POST">';
+#    echo '<input type="hidden" name="sid" value='.$rs[0].'>'; 
+#    echo '<input type="hidden" name="account" value='.$id.'>';
+#    $type = $_COOKIE['Type'];
+#    echo '<input type="hidden" name="Type" value='.$type.'>';
+    echo '<button type="button" class="btn btn-info" data-toggle="modal" data-target="#calculate" onclick="function1('.$rs[0].')">Calculate Price</button>';
+    echo '</div>';
+    
     echo '</div>';
     echo '</div>';
     echo '</div>';
-    echo '</div>';
+
+
   }
- 
+  //$( '#calculate' ).load(window.location.href + '#calculate' );
+  echo "<script>  
+    function function1(val) {  
+      document.cookie = 'sid='+val; 
+      var str = document.getElementById(\"Type\").value;  
+      document.cookie = 'Type='+str; 
+    } 
+    function test1(va){
+      document.getElementById(\"Type\").value = va;  
+      document.cookie = 'Type='+va; 
+    }
+  </script>";
+
+  echo "<script>  
+    function function2(val, id) { 
+      var str = 'pid'+ id +'='+val;
+      document.cookie = str; 
+    }
+  </script>";
+
+
+  // Get cookie immediately
+  echo "<script>  
+        function getcookie(cName) {
+          const name = cName + '=';
+          const cDecoded = decodeURIComponent(document.cookie); //to be careful
+          const cArr = cDecoded .split('; ');
+          let res;
+          cArr.forEach(val => {
+              if (val.indexOf(name) === 0) res = val.substring(name.length);
+          })
+          return res;
+        }
+      </script>";
+    
+
+  $id = $_GET['id'];
+  echo '<div class="modal fade" id="calculate"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
+    echo '<div class="modal-dialog">';
+      echo '<div class="modal-content">';
+        echo '<div class="modal-header">';
+          echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+          echo '<h4 class="modal-title">order details</h4>';
+        echo '</div>';
+        echo '<div class="modal-body">';
+          echo '<div class="row">';
+            echo '<div class="  col-xs-12">';
+              echo '<table class="table" style=" margin-top: 15px;">';
+                echo '<thead>';
+                  echo '<tr>';
+                    echo '<th scope="col">Picture</th>';
+                    echo '<th scope="col">meal name</th>';
+                    echo '<th scope="col">price</th>';
+                    echo '<th scope="col">Order Quantity</th>';
+                  echo '</tr>';
+                echo '</thead>';
+                echo '<tbody>';
+                
+                $sql_b = 'select goods.img, goods.imgtype, goods.name, goods.price, goods.PID from goods where goods.SID = '.$_COOKIE['sid'];
+                //$sql_b = "select goods.img, goods.imgtype, goods.name, goods.price, goods.PID from goods where goods.SID = ".getcookie('sid');
+                $stmt_b = mysqli_stmt_init($link); 
+                mysqli_stmt_prepare($stmt_b, $sql_b); 
+                mysqli_stmt_execute($stmt_b); 
+                $data_b =$stmt_b->get_result();
+                $subtotal = 0;
+                while($result_b = mysqli_fetch_row($data_b)){
+                  $subtotal = $subtotal + $result_b[3] * (int)$_COOKIE['pid'.$result_b[4]];
+                  echo '<tr>';
+                  echo '<td><img src="data:'.$result_b[1].';base64,'.$result_b[0].'" /></td>';
+                  echo '<td>'.$result_b[2].'</td>';
+                  echo '<td>'.$result_b[3].'</td>';
+                  echo '<td>'.$_COOKIE['pid'.$result_b[4]].'</td>';
+                  echo '</tr>';
+                }
+                echo '</tbody>';
+              echo '</table>';
+              echo 'Subtotal: $'.$subtotal.'<br>';
+              $sql_l = "select ST_Distance_Sphere(POINT(store.longitude,store.latitude),POINT(user.longitude, user.latitude)) from user, store where store.SID = ".$_COOKIE['sid']." and user.account = '$id'";
+              $stmt_l = mysqli_stmt_init($link); 
+              mysqli_stmt_prepare($stmt_l, $sql_l); 
+              mysqli_stmt_execute($stmt_l); 
+              $data_l =$stmt_l->get_result();
+              $delivery=mysqli_fetch_row($data_l);
+              $t = $delivery[0] / 100;
+              $fee = round($t);
+              if($fee < 10){
+                $fee = 10;
+              }
+              if($_COOKIE['Type'] == 'Pick-Up'){
+                $fee = 0;
+              }
+              echo 'Delivery fee: $'.$fee.'<br>';
+              $total = $subtotal + $fee;
+              echo 'Total Price: $'.$total;
+            echo '</div>';
+          echo '</div>';
+        echo '</div>';
+      echo '</div>';
+    echo '</div>';
+  echo '</div>';
 ?>
 
                 <!-- Modal -->
@@ -795,6 +910,7 @@
                 var dst = "filter.php?id="+id+"&op="+op+"&order="+odr;
                 location.href=dst;
                
+                
             }    
         </script> 
         <script>
@@ -1156,7 +1272,7 @@
         <script>
           
             function get_trade_filter() {
-                
+               
                 var str =  document.getElementById("trade_filter").value;  
                 document.cookie = "trade_filter="+str;  
                 var id = <?php echo(json_encode($_GET['id'])); ?> ;

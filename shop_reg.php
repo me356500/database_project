@@ -7,7 +7,7 @@ $account = $_POST["account"];
 $category = $_POST["category"];
 $latitude=$_POST["latitude"];
 $longitude=$_POST['longitude'];
-
+//session
 session_start();
 $_SESSION['account'] = ".$account.";
 

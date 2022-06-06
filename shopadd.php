@@ -10,6 +10,7 @@ $sql = "select  SID from store where UID = (select UID from user where account =
 $data1 = mysqli_query($link, $sql);          
 
 $rs1 = mysqli_fetch_row($data1); 
+//session;
 $_SESSION['account'] = ".$account.";
 
 

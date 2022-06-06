@@ -5,6 +5,7 @@ date_default_timezone_set('Asia/Taipei');
 $oid=$_POST["oid"];
 $account = $_POST["account"];
 $n_time = date("Y-m-d H:i:s");
+//session
 session_start();
 $_SESSION['account'] = ".$account.";
 
