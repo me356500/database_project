@@ -1,31 +1,9 @@
-<head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <!-- Bootstrap CSS -->
-
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <title>Hello, world!</title>
-</head>
-
-<?php
-header("Content-Type: text/html; charset=utf8");
-include 'config.php';
-$sid = $_COOKIE['sid'];
-$type = $_COOKIE['Type'];
-session_start();
-$id = $_GET['id'];
-
-$_SESSION['account'] = ".$id.";
-echo '<div class="modal-dialog">';
+echo '<div class="modal fade" id="calculate"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">';
+    echo '<div class="modal-dialog">';
       echo '<div class="modal-content">';
         echo '<div class="modal-header">';
-          echo '<h4 class="modal-title">Order details</h4>';
+          echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+          echo '<h4 class="modal-title">order details</h4>';
         echo '</div>';
         echo '<div class="modal-body">';
           echo '<div class="row">';
@@ -41,7 +19,7 @@ echo '<div class="modal-dialog">';
                 echo '</thead>';
                 echo '<tbody>';
                 
-                $sql_b = 'select goods.img, goods.imgtype, goods.name, goods.price, goods.PID from goods where goods.SID = '.$sid;
+                $sql_b = 'select goods.img, goods.imgtype, goods.name, goods.price, goods.PID from goods where goods.SID = '.$_COOKIE['sid'];
                 //$sql_b = "select goods.img, goods.imgtype, goods.name, goods.price, goods.PID from goods where goods.SID = ".getcookie('sid');
                 $stmt_b = mysqli_stmt_init($link); 
                 mysqli_stmt_prepare($stmt_b, $sql_b); 
@@ -76,14 +54,10 @@ echo '<div class="modal-dialog">';
               }
               echo 'Delivery fee: $'.$fee.'<br>';
               $total = $subtotal + $fee;
-              echo 'Total Price: $'.$total.'<br>';
-              echo '<br>';
-              echo '<br>';
-              echo '<a href="nav.php?id='.$id.'&op=0&order=0" class="btn btn-danger" data-toggle="modal">Cancel</a>';
-              echo '<a href="nav.php?id='.$id.'&op=0&order=0" class="btn btn-success" data-toggle="modal">Order</a>';
+              echo 'Total Price: $'.$total;
             echo '</div>';
           echo '</div>';
         echo '</div>';
       echo '</div>';
     echo '</div>';
-?>
+  echo '</div>';

@@ -294,9 +294,9 @@
               $name = '';
               $distance = 'all';
             }
-            echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=0">order by name</a><br>';
-            echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=1">order by category</a><br>';
-            echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=2">order by distance</a>';
+           // echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=0">order by name</a><br>';
+           // echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=1">order by category</a><br>';
+           // echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=2">order by distance</a>';
           ?>
         </div>
         <div class="row">
@@ -519,56 +519,43 @@
 #    echo '<input type="hidden" name="Type" value='.$type.'>';
     echo '<button type="button" class="btn btn-info" data-toggle="modal" data-target="#calculate" onclick="function1('.$rs[0].')">Calculate Price</button>';
     echo '</div>';
-    
     echo '</div>';
     echo '</div>';
     echo '</div>';
 
 
   }
-  //$( '#calculate' ).load(window.location.href + '#calculate' );
-
-  echo "<script>  
-    function function2(val, id) { 
-      var str = 'pid'+ id +'='+val;
-      document.cookie = str; 
-    }
-  </script>";
-
-
-  // Get cookie immediately
-  echo "<script>  
-        function getcookie(cName) {
-          const name = cName + '=';
-          const cDecoded = decodeURIComponent(document.cookie); //to be careful
-          const cArr = cDecoded .split('; ');
-          let res;
-          cArr.forEach(val => {
-              if (val.indexOf(name) === 0) res = val.substring(name.length);
-          })
-          return res;
-        }
-      </script>";
-    
-
-  $id = $_GET['id'];
   
 ?>
 <script>  
-    function function1(val) {  
-      document.cookie = 'sid='+val; 
-      var str = document.getElementById("Type").value;  
-      document.cookie = 'Type='+str; 
-      var id = <?php echo(json_encode($_GET['id'])); ?> ;
-      var dst = 'calculate.php?id='+id;
-      location.href=dst;
-      //$( '#calculate' ).load(window.location.href + '#calculate' );
-    } 
-    function test1(va){
-      document.getElementById("Type").value = va;  
-      document.cookie = 'Type='+va; 
-    }
-  </script>
+  function function2(val, id) { 
+    var str = 'pid'+ id +'='+val;
+    document.cookie = str; 
+  }
+  function getcookie(cName) {
+    const name = cName + '=';
+    const cDecoded = decodeURIComponent(document.cookie); //to be careful
+    const cArr = cDecoded .split('; ');
+    let res;
+    cArr.forEach(val => {
+        if (val.indexOf(name) === 0) res = val.substring(name.length);
+    })
+    return res;
+  }
+  function function1(val) {  
+    document.cookie = 'sid='+val; 
+    var str = document.getElementById("Type").value;  
+    document.cookie = 'Type='+str; 
+    var id = <?php echo(json_encode($_GET['id'])); ?> ;
+    var dst = 'calculate.php?id='+id;
+    location.href=dst;
+      
+  } 
+  function test1(va){
+    document.getElementById("Type").value = va;  
+    document.cookie = 'Type='+va; 
+  }
+</script>
                 <!-- Modal -->
    
           </div>
@@ -958,7 +945,7 @@
                                 echo '</tr>';
                               echo '</thead>';
                               echo '<tbody>';
-                              $sql_in = 'select goods.img, goods.imgtype, goods.name, goods.price, amount.quantity from amount, goods, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID and amount.PID = goods.PID';
+                              $sql_in = 'select amount.img, amount.imgtype, amount.name, amount.price, amount.quantity from amount, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID';
                               $stmt_in = mysqli_stmt_init($link); 
                               mysqli_stmt_prepare($stmt_in, $sql_in); 
                               mysqli_stmt_execute($stmt_in); 
