@@ -1,3 +1,16 @@
+<script>
+  function deleteAllCookies() {
+        var cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+            
+            var cookie = cookies[i];
+            var eqPos = cookie.indexOf("=");
+            var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+        }
+</script>
+
 <?php 
 header("Content-Type: text/html; charset=utf8");
 include 'config.php';
@@ -28,7 +41,7 @@ $sql = "select name from store where sid =(select sid from order_list where oid=
 $data = mysqli_query($link, $sql);
 $shop_name=mysqli_fetch_row($data);
 
-$sql = "select balance from user where uid = '$uid_shop'";
+$sql = "select balance from user where uid = '$uid_shop[0]'";
 $data = mysqli_query($link, $sql);
 $shop_balance=mysqli_fetch_row($data);
 

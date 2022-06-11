@@ -54,6 +54,11 @@ $sql = "select uid from user where account = '$account'";
 $data = mysqli_query($link, $sql);
 $rs1=mysqli_fetch_row($data);
 
+$sql = "select name from user where account = '$account'";
+$data = mysqli_query($link, $sql);
+$n1=mysqli_fetch_row($data);
+
+
 $link->begin_transaction();
 
 
@@ -65,7 +70,7 @@ try {
     mysqli_stmt_execute($stmt);
 
     $n_time = date("Y-m-d H:i:s");
-    $sql = "INSERT INTO trade VALUES(\"$rs1[0]\",NULL,?,\"Recharge\",\"$n_time\",\"$rs1[0]\")";
+    $sql = "INSERT INTO trade VALUES(\"$rs1[0]\",NULL,?,\"Recharge\",\"$n_time\",\"$n1[0]\")";
     $stmt = mysqli_stmt_init($link); 
     mysqli_stmt_prepare($stmt, $sql); 
     mysqli_stmt_bind_param($stmt, 'i',$addval); 

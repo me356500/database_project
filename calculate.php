@@ -42,12 +42,13 @@ echo '<div class="modal-dialog">';
                 echo '<tbody>';
                 
                 $sql_b = 'select goods.img, goods.imgtype, goods.name, goods.price, goods.PID from goods where goods.SID = '.$sid;
-                //$sql_b = "select goods.img, goods.imgtype, goods.name, goods.price, goods.PID from goods where goods.SID = ".getcookie('sid');
+
                 $stmt_b = mysqli_stmt_init($link); 
                 mysqli_stmt_prepare($stmt_b, $sql_b); 
                 mysqli_stmt_execute($stmt_b); 
                 $data_b =$stmt_b->get_result();
                 $subtotal = 0;
+                $goods_number = 0;
                 while($result_b = mysqli_fetch_row($data_b)){
                   $subtotal = $subtotal + $result_b[3] * (int)$_COOKIE['pid'.$result_b[4]];
                   echo '<tr>';
@@ -56,6 +57,7 @@ echo '<div class="modal-dialog">';
                   echo '<td>'.$result_b[3].'</td>';
                   echo '<td>'.$_COOKIE['pid'.$result_b[4]].'</td>';
                   echo '</tr>';
+                  $goods_number = $goods_number + 1;
                 }
                 echo '</tbody>';
               echo '</table>';
@@ -80,10 +82,24 @@ echo '<div class="modal-dialog">';
               echo '<br>';
               echo '<br>';
               echo '<a href="nav.php?id='.$id.'&op=0&order=0" class="btn btn-danger" data-toggle="modal">Cancel</a>';
-              echo '<a href="nav.php?id='.$id.'&op=0&order=0" class="btn btn-success" data-toggle="modal">Order</a>';
+              echo '<a href="order_submit.php?id='.$id.'&gn='.$goods_number.'" class="btn btn-success" data-toggle="modal">Order</a>';
+              echo '</form>';
             echo '</div>';
           echo '</div>';
         echo '</div>';
       echo '</div>';
     echo '</div>';
 ?>
+
+<script>
+  function deleteAllCookies() {
+        var cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+            
+            var cookie = cookies[i];
+            var eqPos = cookie.indexOf("=");
+            var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+        }
+</script>

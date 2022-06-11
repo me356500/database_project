@@ -63,8 +63,17 @@
             session_unset(); ?>
             document.location = link;
         }
+        function reloadpage() {
+         
+          var id = <?php echo(json_encode($_GET['id'])); ?> ;
+          var op = <?php echo(json_encode($_GET['op'])); ?> ;
+          var odr = <?php echo(json_encode($_GET['order'])); ?> ;
+          var dst = "filter.php?id="+id+"&op="+op+"&order="+odr;
+          location.href=dst;
+        }
         </script>
         <li><a href="javascript:clearAndRedirect('index.html')">Logout</a></li>
+        <li><a href="javascript:reloadpage()">Refresh</a></li>
     </ul>
     
     <div class="tab-content">
@@ -974,6 +983,13 @@
                             if($fee < 10){
                               $fee = 10;
                             }
+                            $sql = "select category from order_list where OID = '$rd[0]'";
+                            $otype = mysqli_query($link,$sql);
+                            $order_type = mysqli_fetch_row($otype);
+                           
+                            if ($order_type[0] == "Pick-Up"){
+                              $fee = 0;
+                            }
                             echo 'Delivery fee: $'.$fee.'<br>';
                             $total = $subtotal + $fee;
                             echo 'Total Price: $'.$total;
@@ -1133,7 +1149,7 @@
                                   echo '</tr>';
                                 echo '</thead>';
                                 echo '<tbody>';
-                                $sql_in = 'select goods.img, goods.imgtype, goods.name, goods.price, amount.quantity from amount, goods, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID and amount.PID = goods.PID';
+                                $sql_in = 'select amount.img, amount.imgtype, amount.name, amount.price, amount.quantity from amount, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID';
                                 $stmt_in = mysqli_stmt_init($link); 
                                 mysqli_stmt_prepare($stmt_in, $sql_in); 
                                 mysqli_stmt_execute($stmt_in); 
@@ -1161,6 +1177,13 @@
                               $fee = round($t);
                               if($fee < 10){
                                 $fee = 10;
+                              }
+                              $sql = "select category from order_list where OID = '$rd[0]'";
+                              $otype = mysqli_query($link,$sql);
+                              $order_type = mysqli_fetch_row($otype);
+                             
+                              if ($order_type[0] == "Pick-Up"){
+                                $fee = 0;
                               }
                               echo 'Delivery fee: $'.$fee.'<br>';
                               $total = $subtotal + $fee;
