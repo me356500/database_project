@@ -15,34 +15,53 @@ mysqli_stmt_prepare($stmt_b, $sql_b);
 mysqli_stmt_execute($stmt_b); 
 $data_b =$stmt_b->get_result();
 $subtotal = 0;
+$now_number = 0;
 while($result_b = mysqli_fetch_row($data_b)){
     if (!isset($_COOKIE['pid'.$result_b[4]])) {
         continue;   
     }
-    if(!is_int($_COOKIE['pid'.$result_b[4]] + 0)){
+    if($_COOKIE['pid'.$result_b[4]] < 0) {
         echo "
         <script> 
-       
-            alert('Error: quantity is not a integer!!');
-
+            alert('Error: quantity must be positive integer!!');
             location.href=  'nav.php?id=$id&op=0&order=0';
         </script>
         ";
+        exit;
+    }
+    if(!is_int($_COOKIE['pid'.$result_b[4]] + 0)){
+        echo "
+        <script> 
+            alert('Error: quantity is not a integer!!');
+            location.href=  'nav.php?id=$id&op=0&order=0';
+        </script>
+        ";
+        exit;
      
     }
     if($result_b[5] < $_COOKIE['pid'.$result_b[4]]){
         echo "
         <script> 
         
-            alert('Error: quantity isn't enough !!');
-        
+            alert('Error: quantity is not enough !!');
             location.href=  'nav.php?id=$id&op=0&order=0';
         </script>
         ";
+        exit;
        
     }
+
     $subtotal = $subtotal + $result_b[3] * (int)$_COOKIE['pid'.$result_b[4]];
-    
+    $now_number = $now_number + 1;
+}
+if($goods_number > $now_number) {
+    echo "
+        <script> 
+            alert('Error: 商店更動商品 請重新下單 !!');
+            location.href=  'nav.php?id=$id&op=0&order=0';
+        </script>
+        ";
+        exit;
 }
 if($subtotal == 0){
     echo "
@@ -100,7 +119,7 @@ mysqli_stmt_execute($stmt);
 $result = $stmt->get_result();
 mysqli_stmt_close($stmt);
 
-$sql = 'INSERT INTO trade VALUES ('.$delivery[5].', NULL, '.$total.', "Recieve", "'.$n_time.'", "'.$id.'")';
+$sql = 'INSERT INTO trade VALUES ('.$delivery[5].', NULL, '.$total.', "Receive", "'.$n_time.'", "'.$id.'")';
 $stmt = mysqli_stmt_init($link); 
 mysqli_stmt_prepare($stmt, $sql);
 mysqli_stmt_execute($stmt); 
@@ -120,7 +139,22 @@ mysqli_stmt_prepare($stmt, $sql);
 mysqli_stmt_execute($stmt); 
 $result = $stmt->get_result();
 mysqli_stmt_close($stmt);
+//modify quantity
+$sql_b = 'select goods.img, goods.imgtype, goods.name, goods.price, goods.PID, goods.quantity from goods where goods.SID = '.$sid;
+$stmt_b = mysqli_stmt_init($link); 
+mysqli_stmt_prepare($stmt_b, $sql_b); 
+mysqli_stmt_execute($stmt_b); 
+$data_b =$stmt_b->get_result();
 
+while($result_b = mysqli_fetch_row($data_b)){
+
+    $sql = 'UPDATE goods SET quantity = quantity  - '.$_COOKIE['pid'.$result_b[4]].' where pid = '.$result_b[4];
+    $stmt = mysqli_stmt_init($link); 
+    mysqli_stmt_prepare($stmt, $sql);
+    mysqli_stmt_execute($stmt); 
+    $result = $stmt->get_result();
+    mysqli_stmt_close($stmt);
+}
 $sql = 'select max(OID) from order_list';
 $stmt = mysqli_stmt_init($link); 
 mysqli_stmt_prepare($stmt, $sql);

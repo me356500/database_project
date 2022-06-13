@@ -500,7 +500,7 @@
           var str = 'pid'+$rss[5]+'=0';
           document.cookie = str; 
       </script>";
-      echo "<input type=\"number\" id=pid".$rss[5]." min=\"0\" max=".$rss[2]." step=\"1\" value=\"0\" oninput=\"function2(this.value, ".$rss[5].")\">";
+      echo "<input type=\"number\" id=pid".$rss[5]." min=\"0\"  step=\"1\" value=\"0\" oninput=\"function2(this.value, ".$rss[5].")\">";
       echo "</td>";
       
       $j++;
@@ -961,6 +961,10 @@
                               $data_in =$stmt_in->get_result();
                               $subtotal = 0;
                               while($rdd=mysqli_fetch_row($data_in)){
+                                if($rdd[4] == 0){
+                                  continue;
+                                }
+
                                 echo '<tr>';
                                   echo '<td><img src="data:'.$rdd[1].';base64,'.$rdd[0].'" /></td>';
                                   echo '<td>'.$rdd[2].'</td>';
@@ -1156,6 +1160,9 @@
                                 $data_in =$stmt_in->get_result();
                                 $subtotal = 0;
                                 while($rdd=mysqli_fetch_row($data_in)){
+                                  if($rdd[4] == 0){
+                                    continue;
+                                  }
                                   echo '<tr>';
                                     echo '<td><img src="data:'.$rdd[1].';base64,'.$rdd[0].'" /></td>';
                                     echo '<td>'.$rdd[2].'</td>';

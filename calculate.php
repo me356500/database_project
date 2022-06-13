@@ -50,6 +50,9 @@ echo '<div class="modal-dialog">';
                 $subtotal = 0;
                 $goods_number = 0;
                 while($result_b = mysqli_fetch_row($data_b)){
+                  if($_COOKIE['pid'.$result_b[4]] == 0) {
+                    continue;
+                  }
                   $subtotal = $subtotal + $result_b[3] * (int)$_COOKIE['pid'.$result_b[4]];
                   echo '<tr>';
                   echo '<td><img src="data:'.$result_b[1].';base64,'.$result_b[0].'" /></td>';

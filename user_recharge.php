@@ -70,7 +70,7 @@ try {
     mysqli_stmt_execute($stmt);
 
     $n_time = date("Y-m-d H:i:s");
-    $sql = "INSERT INTO trade VALUES(\"$rs1[0]\",NULL,?,\"Recharge\",\"$n_time\",\"$n1[0]\")";
+    $sql = "INSERT INTO trade VALUES(\"$rs1[0]\",NULL,?,\"Recharge\",\"$n_time\",\"$account\")";
     $stmt = mysqli_stmt_init($link); 
     mysqli_stmt_prepare($stmt, $sql); 
     mysqli_stmt_bind_param($stmt, 'i',$addval); 
