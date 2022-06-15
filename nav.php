@@ -40,11 +40,36 @@
   <div class="container">
 
     <ul class="nav nav-tabs">
-      <li class="active"><a href="#home">Home</a></li>
-      <li><a href="#menu1">shop</a></li>
-      <li><a href="#menu2">My Order</a></li>
-      <li><a href="#menu3">Shop Order</a></li>
-      <li><a href="#menu4">Transaction Record</a></li>
+      <?php
+      if(!isset($_GET['menu'])){
+        echo '<li class="active"><a href="#home">Home</a></li>';
+        echo '<li><a href="#menu1">shop</a></li>';
+        echo '<li><a href="#menu2">My Order</a></li>';
+        echo '<li><a href="#menu3">Shop Order</a></li>';
+        echo '<li><a href="#menu4">Transaction Record</a></li>';
+      }
+      else if($_GET['menu'] == 1){
+        echo '<li><a href="#home">Home</a></li>';
+        echo '<li><a href="#menu1">shop</a></li>';
+        echo '<li class="active"><a href="#menu2">My Order</a></li>';
+        echo '<li><a href="#menu3">Shop Order</a></li>';
+        echo '<li><a href="#menu4">Transaction Record</a></li>';
+      }
+      else if($_GET['menu'] == 2){
+        echo '<li><a href="#home">Home</a></li>';
+        echo '<li><a href="#menu1">shop</a></li>';
+        echo '<li><a href="#menu2">My Order</a></li>';
+        echo '<li class="active"><a href="#menu3">Shop Order</a></li>';
+        echo '<li><a href="#menu4">Transaction Record</a></li>';
+      }
+      else if($_GET['menu'] == 3){
+        echo '<li><a href="#home">Home</a></li>';
+        echo '<li><a href="#menu1">shop</a></li>';
+        echo '<li><a href="#menu2">My Order</a></li>';
+        echo '<li class="active"><a href="#menu3">Shop Order</a></li>';
+        echo '<li><a href="#menu4">Transaction Record</a></li>';
+      }
+      ?>
       <script>
         function deleteAllCookies() {
         var cookies = document.cookie.split(";");
@@ -63,12 +88,28 @@
             session_unset(); ?>
             document.location = link;
         }
+        function reloadpage() {
+         
+          var id = <?php echo(json_encode($_GET['id'])); ?> ;
+          var op = <?php echo(json_encode($_GET['op'])); ?> ;
+          var odr = <?php echo(json_encode($_GET['order'])); ?> ;
+          var dst = "filter.php?id="+id+"&op="+op+"&order="+odr;
+          location.href=dst;
+        }
         </script>
         <li><a href="javascript:clearAndRedirect('index.html')">Logout</a></li>
+        <li><a href="javascript:reloadpage()">Refresh</a></li>
     </ul>
     
     <div class="tab-content">
-      <div id="home" class="tab-pane fade in active">
+      <?php
+      if(!isset($_GET['menu'])){
+        echo '<div id="home" class="tab-pane fade in active">';
+      }
+      else{
+        echo '<div id="home" class="tab-pane fade">';
+      }
+      ?>
         <h3>Profile</h3>
         <div class="row">
           <div class="col-xs-10">
@@ -294,9 +335,9 @@
               $name = '';
               $distance = 'all';
             }
-            # echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=0">order by name</a><br>';
-            # echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=1">order by category</a><br>';
-            # echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=2">order by distance</a>';
+           // echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=0">order by name</a><br>';
+           // echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=1">order by category</a><br>';
+           // echo '<a href="nav.php?id='.$id.'&op=1&shopname='.$name.'&meal='.$meal.'&distance='.$distance.'&category='.$category.'&lowerbound='.$lowerbound.'&upperbound='.$upperbound.'&order=2">order by distance</a>';
           ?>
         </div>
         <div class="row">
@@ -491,7 +532,7 @@
           var str = 'pid'+$rss[5]+'=0';
           document.cookie = str; 
       </script>";
-      echo "<input type=\"number\" id=pid".$rss[5]." min=\"0\" max=".$rss[2]." step=\"1\" value=\"0\" oninput=\"function2(this.value, ".$rss[5].")\">";
+      echo "<input type=\"number\" id=pid".$rss[5]." min=\"0\"  step=\"1\" value=\"0\" oninput=\"function2(this.value, ".$rss[5].")\">";
       echo "</td>";
       
       $j++;
@@ -519,56 +560,43 @@
 #    echo '<input type="hidden" name="Type" value='.$type.'>';
     echo '<button type="button" class="btn btn-info" data-toggle="modal" data-target="#calculate" onclick="function1('.$rs[0].')">Calculate Price</button>';
     echo '</div>';
-    
     echo '</div>';
     echo '</div>';
     echo '</div>';
 
 
   }
-  //$( '#calculate' ).load(window.location.href + '#calculate' );
-
-  echo "<script>  
-    function function2(val, id) { 
-      var str = 'pid'+ id +'='+val;
-      document.cookie = str; 
-    }
-  </script>";
-
-
-  // Get cookie immediately
-  echo "<script>  
-        function getcookie(cName) {
-          const name = cName + '=';
-          const cDecoded = decodeURIComponent(document.cookie); //to be careful
-          const cArr = cDecoded .split('; ');
-          let res;
-          cArr.forEach(val => {
-              if (val.indexOf(name) === 0) res = val.substring(name.length);
-          })
-          return res;
-        }
-      </script>";
-    
-
-  $id = $_GET['id'];
   
 ?>
 <script>  
-    function function1(val) {  
-      document.cookie = 'sid='+val; 
-      var str = document.getElementById("Type").value;  
-      document.cookie = 'Type='+str; 
-      var id = <?php echo(json_encode($_GET['id'])); ?> ;
-      var dst = 'calculate.php?id='+id;
-      location.href=dst;
-      //$( '#calculate' ).load(window.location.href + '#calculate' );
-    } 
-    function test1(va){
-      document.getElementById("Type").value = va;  
-      document.cookie = 'Type='+va; 
-    }
-  </script>
+  function function2(val, id) { 
+    var str = 'pid'+ id +'='+val;
+    document.cookie = str; 
+  }
+  function getcookie(cName) {
+    const name = cName + '=';
+    const cDecoded = decodeURIComponent(document.cookie); //to be careful
+    const cArr = cDecoded .split('; ');
+    let res;
+    cArr.forEach(val => {
+        if (val.indexOf(name) === 0) res = val.substring(name.length);
+    })
+    return res;
+  }
+  function function1(val) {  
+    document.cookie = 'sid='+val; 
+    var str = document.getElementById("Type").value;  
+    document.cookie = 'Type='+str; 
+    var id = <?php echo(json_encode($_GET['id'])); ?> ;
+    var dst = 'calculate.php?id='+id;
+    location.href=dst;
+      
+  } 
+  function test1(va){
+    document.getElementById("Type").value = va;  
+    document.cookie = 'Type='+va; 
+  }
+</script>
                 <!-- Modal -->
    
           </div>
@@ -576,7 +604,6 @@
         </div>
       </div>
       <div id="menu1" class="tab-pane fade">
-
       <form action="shop_reg.php" class="fh5co-form animate-box" data-animate-effect="fadeIn" method="post">
         <h3> Start a business </h3>
         <a href="index.html">Logout</a>
@@ -827,7 +854,19 @@
 
       </div>
     
-      <div id="menu2" class="tab-pane fade">
+      <?php
+      if(isset($_GET['menu'])){
+        if($_GET['menu'] == 1){
+          echo '<div id="menu2" class="tab-pane fade in active">';
+        }
+        else{
+          echo '<div id="menu2" class="tab-pane fade">';
+        }
+      }
+      else{
+        echo '<div id="menu2" class="tab-pane fade">';
+      }
+      ?>
         <div class="form-group">
           <label class="control-label col-sm-1" for="status">Status</label>
             <div class="col-sm-5">
@@ -848,7 +887,7 @@
                 var id = <?php echo(json_encode($_GET['id'])); ?> ;
                 var op = <?php echo(json_encode($_GET['op'])); ?> ;
                 var odr = <?php echo(json_encode($_GET['order'])); ?> ;
-                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr;
+                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr+"&filter=1";
                 location.href=dst;
                
                 
@@ -958,13 +997,17 @@
                                 echo '</tr>';
                               echo '</thead>';
                               echo '<tbody>';
-                              $sql_in = 'select goods.img, goods.imgtype, goods.name, goods.price, amount.quantity from amount, goods, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID and amount.PID = goods.PID';
+                              $sql_in = 'select amount.img, amount.imgtype, amount.name, amount.price, amount.quantity from amount, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID';
                               $stmt_in = mysqli_stmt_init($link); 
                               mysqli_stmt_prepare($stmt_in, $sql_in); 
                               mysqli_stmt_execute($stmt_in); 
                               $data_in =$stmt_in->get_result();
                               $subtotal = 0;
                               while($rdd=mysqli_fetch_row($data_in)){
+                                if($rdd[4] == 0){
+                                  continue;
+                                }
+
                                 echo '<tr>';
                                   echo '<td><img src="data:'.$rdd[1].';base64,'.$rdd[0].'" /></td>';
                                   echo '<td>'.$rdd[2].'</td>';
@@ -987,6 +1030,13 @@
                             if($fee < 10){
                               $fee = 10;
                             }
+                            $sql = "select category from order_list where OID = '$rd[0]'";
+                            $otype = mysqli_query($link,$sql);
+                            $order_type = mysqli_fetch_row($otype);
+                           
+                            if ($order_type[0] == "Pick-Up"){
+                              $fee = 0;
+                            }
                             echo 'Delivery fee: $'.$fee.'<br>';
                             $total = $subtotal + $fee;
                             echo 'Total Price: $'.$total;
@@ -1002,7 +1052,19 @@
         </div>
       </div>
 
-      <div id="menu3" class="tab-pane fade">
+      <?php
+      if(isset($_GET['menu'])){
+        if($_GET['menu'] == 2){
+          echo '<div id="menu3" class="tab-pane fade in active">';
+        }
+        else{
+          echo '<div id="menu3" class="tab-pane fade">';
+        }
+      }
+      else{
+        echo '<div id="menu3" class="tab-pane fade">';
+      }
+      ?>
         <div class="form-group">
           <label class="control-label col-sm-1" for="status">Status</label>
             <div class="col-sm-5">
@@ -1021,7 +1083,7 @@
               var id = <?php echo(json_encode($_GET['id'])); ?> ;
                 var op = <?php echo(json_encode($_GET['op'])); ?> ;
                 var odr = <?php echo(json_encode($_GET['order'])); ?> ;
-                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr;
+                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr+"&filter=2";
                 location.href=dst;
 
             }    
@@ -1146,13 +1208,16 @@
                                   echo '</tr>';
                                 echo '</thead>';
                                 echo '<tbody>';
-                                $sql_in = 'select goods.img, goods.imgtype, goods.name, goods.price, amount.quantity from amount, goods, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID and amount.PID = goods.PID';
+                                $sql_in = 'select amount.img, amount.imgtype, amount.name, amount.price, amount.quantity from amount, order_list where order_list.OID = '.$rd[0].' and amount.OID = order_list.OID';
                                 $stmt_in = mysqli_stmt_init($link); 
                                 mysqli_stmt_prepare($stmt_in, $sql_in); 
                                 mysqli_stmt_execute($stmt_in); 
                                 $data_in =$stmt_in->get_result();
                                 $subtotal = 0;
                                 while($rdd=mysqli_fetch_row($data_in)){
+                                  if($rdd[4] == 0){
+                                    continue;
+                                  }
                                   echo '<tr>';
                                     echo '<td><img src="data:'.$rdd[1].';base64,'.$rdd[0].'" /></td>';
                                     echo '<td>'.$rdd[2].'</td>';
@@ -1175,6 +1240,13 @@
                               if($fee < 10){
                                 $fee = 10;
                               }
+                              $sql = "select category from order_list where OID = '$rd[0]'";
+                              $otype = mysqli_query($link,$sql);
+                              $order_type = mysqli_fetch_row($otype);
+                             
+                              if ($order_type[0] == "Pick-Up"){
+                                $fee = 0;
+                              }
                               echo 'Delivery fee: $'.$fee.'<br>';
                               $total = $subtotal + $fee;
                               echo 'Total Price: $'.$total;
@@ -1191,7 +1263,19 @@
         </div>
       </div>
 
-      <div id="menu4" class="tab-pane fade">
+      <?php
+      if(isset($_GET['menu'])){
+        if($_GET['menu'] == 3){
+          echo '<div id="menu4" class="tab-pane fade in active">';
+        }
+        else{
+          echo '<div id="menu4" class="tab-pane fade">';
+        }
+      }
+      else{
+        echo '<div id="menu4" class="tab-pane fade">';
+      }
+      ?>
       
         <div class="form-group">
           <label class="control-label col-sm-1" for="status">Status</label>
@@ -1219,7 +1303,7 @@
                 var id = <?php echo(json_encode($_GET['id'])); ?> ;
                 var op = <?php echo(json_encode($_GET['op'])); ?> ;
                 var odr = <?php echo(json_encode($_GET['order'])); ?> ;
-                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr;
+                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr+"&filter=3";
                 location.href=dst;
             }    
         </script>
@@ -1293,7 +1377,6 @@
       });
     });
   </script>
-
   <!-- Option 2: Separate Popper and Bootstrap JS -->
   <!--
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
