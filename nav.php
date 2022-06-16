@@ -40,11 +40,43 @@
   <div class="container">
 
     <ul class="nav nav-tabs">
-      <li class="active"><a href="#home">Home</a></li>
-      <li><a href="#menu1">shop</a></li>
-      <li><a href="#menu2">My Order</a></li>
-      <li><a href="#menu3">Shop Order</a></li>
-      <li><a href="#menu4">Transaction Record</a></li>
+      <?php
+      if(!isset($_GET['menu'])){
+        echo '<li class="active"><a href="#home">Home</a></li>';
+        echo '<li><a href="#menu1">shop</a></li>';
+        echo '<li><a href="#menu2">My Order</a></li>';
+        echo '<li><a href="#menu3">Shop Order</a></li>';
+        echo '<li><a href="#menu4">Transaction Record</a></li>';
+      }
+      else if($_GET['menu'] == 1){
+        echo '<li><a href="#home">Home</a></li>';
+        echo '<li><a href="#menu1">shop</a></li>';
+        echo '<li class="active"><a href="#menu2">My Order</a></li>';
+        echo '<li><a href="#menu3">Shop Order</a></li>';
+        echo '<li><a href="#menu4">Transaction Record</a></li>';
+      }
+      else if($_GET['menu'] == 2){
+        echo '<li><a href="#home">Home</a></li>';
+        echo '<li><a href="#menu1">shop</a></li>';
+        echo '<li><a href="#menu2">My Order</a></li>';
+        echo '<li class="active"><a href="#menu3">Shop Order</a></li>';
+        echo '<li><a href="#menu4">Transaction Record</a></li>';
+      }
+      else if($_GET['menu'] == 3){
+        echo '<li><a href="#home">Home</a></li>';
+        echo '<li><a href="#menu1">shop</a></li>';
+        echo '<li><a href="#menu2">My Order</a></li>';
+        echo '<li><a href="#menu3">Shop Order</a></li>';
+        echo '<li class="active"><a href="#menu4">Transaction Record</a></li>';
+      }
+      else {
+        echo '<li class="active"><a href="#home">Home</a></li>';
+        echo '<li><a href="#menu1">shop</a></li>';
+        echo '<li><a href="#menu2">My Order</a></li>';
+        echo '<li><a href="#menu3">Shop Order</a></li>';
+        echo '<li><a href="#menu4">Transaction Record</a></li>';
+      }
+      ?>
       <script>
         function deleteAllCookies() {
         var cookies = document.cookie.split(";");
@@ -68,7 +100,7 @@
           var id = <?php echo(json_encode($_GET['id'])); ?> ;
           var op = <?php echo(json_encode($_GET['op'])); ?> ;
           var odr = <?php echo(json_encode($_GET['order'])); ?> ;
-          var dst = "filter.php?id="+id+"&op="+op+"&order="+odr;
+          var dst = "filter.php?id="+id+"&op="+op+"&order="+odr+"&filter=4";
           location.href=dst;
         }
         </script>
@@ -77,7 +109,14 @@
     </ul>
     
     <div class="tab-content">
-      <div id="home" class="tab-pane fade in active">
+      <?php
+      if(!isset($_GET['menu'])){
+        echo '<div id="home" class="tab-pane fade in active">';
+      }
+      else{
+        echo '<div id="home" class="tab-pane fade">';
+      }
+      ?>
         <h3>Profile</h3>
         <div class="row">
           <div class="col-xs-10">
@@ -572,7 +611,6 @@
         </div>
       </div>
       <div id="menu1" class="tab-pane fade">
-
       <form action="shop_reg.php" class="fh5co-form animate-box" data-animate-effect="fadeIn" method="post">
         <h3> Start a business </h3>
         <a href="index.html">Logout</a>
@@ -823,7 +861,19 @@
 
       </div>
     
-      <div id="menu2" class="tab-pane fade">
+      <?php
+      if(isset($_GET['menu'])){
+        if($_GET['menu'] == 1){
+          echo '<div id="menu2" class="tab-pane fade in active">';
+        }
+        else{
+          echo '<div id="menu2" class="tab-pane fade">';
+        }
+      }
+      else{
+        echo '<div id="menu2" class="tab-pane fade">';
+      }
+      ?>
         <div class="form-group">
           <label class="control-label col-sm-1" for="status">Status</label>
             <div class="col-sm-5">
@@ -844,7 +894,7 @@
                 var id = <?php echo(json_encode($_GET['id'])); ?> ;
                 var op = <?php echo(json_encode($_GET['op'])); ?> ;
                 var odr = <?php echo(json_encode($_GET['order'])); ?> ;
-                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr;
+                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr+"&filter=1";
                 location.href=dst;
                
                 
@@ -1009,7 +1059,19 @@
         </div>
       </div>
 
-      <div id="menu3" class="tab-pane fade">
+      <?php
+      if(isset($_GET['menu'])){
+        if($_GET['menu'] == 2){
+          echo '<div id="menu3" class="tab-pane fade in active">';
+        }
+        else{
+          echo '<div id="menu3" class="tab-pane fade">';
+        }
+      }
+      else{
+        echo '<div id="menu3" class="tab-pane fade">';
+      }
+      ?>
         <div class="form-group">
           <label class="control-label col-sm-1" for="status">Status</label>
             <div class="col-sm-5">
@@ -1028,7 +1090,7 @@
               var id = <?php echo(json_encode($_GET['id'])); ?> ;
                 var op = <?php echo(json_encode($_GET['op'])); ?> ;
                 var odr = <?php echo(json_encode($_GET['order'])); ?> ;
-                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr;
+                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr+"&filter=2";
                 location.href=dst;
 
             }    
@@ -1208,7 +1270,19 @@
         </div>
       </div>
 
-      <div id="menu4" class="tab-pane fade">
+      <?php
+      if(isset($_GET['menu'])){
+        if($_GET['menu'] == 3){
+          echo '<div id="menu4" class="tab-pane fade in active">';
+        }
+        else{
+          echo '<div id="menu4" class="tab-pane fade">';
+        }
+      }
+      else{
+        echo '<div id="menu4" class="tab-pane fade">';
+      }
+      ?>
       
         <div class="form-group">
           <label class="control-label col-sm-1" for="status">Status</label>
@@ -1236,7 +1310,7 @@
                 var id = <?php echo(json_encode($_GET['id'])); ?> ;
                 var op = <?php echo(json_encode($_GET['op'])); ?> ;
                 var odr = <?php echo(json_encode($_GET['order'])); ?> ;
-                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr;
+                var dst = "filter.php?id="+id+"&op="+op+"&order="+odr+"&filter=3";
                 location.href=dst;
             }    
         </script>
@@ -1310,7 +1384,6 @@
       });
     });
   </script>
-
   <!-- Option 2: Separate Popper and Bootstrap JS -->
   <!--
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>

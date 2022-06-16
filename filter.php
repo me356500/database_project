@@ -7,11 +7,14 @@ session_start();
 $id = $_GET['id'];
 $op = $_GET['op'];
 $order = $_GET['order'];
-
+$menu = $_GET['filter'];
 
 $_SESSION['account'] = ".$id.";
-
-header("Location:nav.php?id=".$id."&op=0&order=0");
+if($menu == 4) {
+    header("Location:nav.php?id=".$id."&op=".$op."&order=".$order."");
+    exit;
+}
+header("Location:nav.php?id=".$id."&op=".$op."&order=".$order."&menu=".$menu."");
 echo "<script>
 window.location.hash = '#menu2';
 </script>";

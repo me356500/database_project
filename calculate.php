@@ -84,7 +84,7 @@ echo '<div class="modal-dialog">';
               echo 'Total Price: $'.$total.'<br>';
               echo '<br>';
               echo '<br>';
-              echo '<a href="nav.php?id='.$id.'&op=0&order=0" class="btn btn-danger" data-toggle="modal">Cancel</a>';
+              echo '<a href="nav.php?id='.$id.'&op=0&order=0" class="btn btn-danger" data-toggle="modal" onclick="deleteAllCookies()">Cancel</a>';
               echo '<a href="order_submit.php?id='.$id.'&gn='.$goods_number.'" class="btn btn-success" data-toggle="modal">Order</a>';
               echo '</form>';
             echo '</div>';
